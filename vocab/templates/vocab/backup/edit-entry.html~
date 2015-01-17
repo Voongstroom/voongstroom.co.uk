@@ -1,0 +1,3 @@
+id: {{ word.id }}
+word: {{ word.word }}
+description: {{ word.description }}

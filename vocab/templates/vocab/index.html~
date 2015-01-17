@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vocab/styles.css' %}">
+  </head>
+
+  <body>
+    <!-- Login and Sign up -->
+    <div class="user-panel" style="margin-bottom: 20px;">
+      {% if user and not user.is_anonymous %}
+      Logged in as {{ user }}
+      <a href="logout">
+	<button>
+	  Log Out
+    </button>
+      </a>
+      {% else %}
+      <form action="sign-up" method="POST"> {% csrf_token %}
+	<fieldset>
+	  <legend>
+	    New User:
+	  </legend>
+	  User Name:
+	  <input type="text" name="new-username">
+	  Password:
+	  <input type="password" name="new-password">
+	  <input type="submit" value="Submit">
+	</fieldset>
+      </form>
+      <form action="login" method="POST"> {% csrf_token %}
+	<fieldset>
+	  <legend>
+	    Existing User:
+	  </legend>
+	  User Name:
+	  <input type="text" name="username">
+	  Password:
+	  <input type="password" name="password">
+	  <input type="submit" value="Log in">
+	</fieldset>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if user and not user.is_anonymous %}
+    <!-- Add a new word -->
+    <div class="container">
+      <div class="entry" id="entyr-new-word" >
+	<form action="add-word" method="POST"> {% csrf_token %}
+	  <div class="vote" id="vote-new-word" style="display:none">
+	  </div>
+	  <div class="word" id="word-new-word">
+	    <input class="word-input" id="word-input-new-word" type="text" name="word" onblur="addWord('word-input-new-word', 'description-new-word')" placeholder="New word">
+	  </div>
+	  <input class="description" id="description-new-word" type="text" name="description" onblur="addWord('word-input-new-word', 'description-new-word')" placeholder="Description..." value="" >
+	  <div class="tags" id="tags-new-word" style="display:none">
+	  </div>
+	  <div class="entry-date" id="entry-date-new-word" style="display:none">
+	  </div>
+	  <div class="progress" id="progress-new-word" style="display:none">
+	  </div>
+	</form>
+      </div>
+      
+      <!-- Words -->
+      {% for word in words %}
+      <div class="entry" id="entry-{{ word.id }}" >
+	<div class="vote" id="vote-{{ word.id }}" style="display:none">
+	  {{ word.popularity_rating }}
+	</div>
+	<div class="word" id="word-{{ word.id }}">
+	  {{ word.word }}
+	</div>
+	<div class="description" id="description-{{ word.id }}">
+	  {{ word.brief_description }}
+	</div>
+	<div class="tags" id="tags-{{ word.id }}" style="display:none">
+	  Tags: 
+	  {% for tag in word.tags %}
+	  {{ tag }} 
+	  {% endfor %}
+	</div>
+	<div class="entry-date" id="entry-date-{{ word.id }}" style="display:none">
+	  {{ word.entry_date }}
+	</div>
+	<div class="progress" id="progress-{{ word.id }}" style="display:none">
+	  {{ word.skill_rating }}
+	</div>
+	
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% load staticfiles %}
+    <script src="{% static "vocab/index.js" %}"></script>
+
+  </body>
+</html>
+

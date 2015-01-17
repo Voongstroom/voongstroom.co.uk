@@ -1,0 +1,5 @@
+command = '/opt/myenv/bin/gunicorn'
+pythonpath = '/home/dvoong/myproject'
+bind = '127.0.0.1:8000'
+workers = 3
+user = 'dvoong'

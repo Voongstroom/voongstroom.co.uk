@@ -1,0 +1,7 @@
+A vocabulary project that stores user inputted words and descriptions. Including filtering, tagging and search facilities.
+
+To initialise the project use the following commands,
+
+source /opt/myenv/bin/activate # sets up the python virtual environment
+gunicorn -c gunicorn_config.py myproject.wsgi & # starts the WSGI HTTP server
+
