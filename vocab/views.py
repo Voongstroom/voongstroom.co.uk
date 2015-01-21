@@ -37,6 +37,25 @@ def delete_entry(request):
             entry.delete()
     return HttpResponse('Successfully deleted: id: {}, word: {}'.format(id, word))
 
+def edit_entry(request):
+    user = request.user
+    user = user if not user.is_anonymous() else None
+    print 'request.POST: {}'.format(request.POST)
+    id = request.POST['id'] if 'id' in request.POST else None
+    word = request.POST['word'] if 'word' in request.POST else None
+    description = request.POST['description'] if 'description' in request.POST else None
+    if user and id and word and description:
+        try:
+            entry = Word.objects.get(id=id)
+        except django.core.exceptions.ObjectDoesNotExist:
+            entry = None
+        if entry:
+            entry.word = word
+            entry.brief_description = description
+            entry.save()
+            print 'changed'
+    return HttpResponse('id: {}, word: {}, description: {}'.format(id, word, description));
+
 def index(request, user=None):
     user = request.user
     words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user), key=lambda word: word.word)

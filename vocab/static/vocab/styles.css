@@ -1,3 +1,30 @@
+.tag {
+    background-color: LightBlue;
+    display: inline;
+    padding: 2px 2px 2px 2px;
+    border: 2px solid black;
+    border-radius: 2px;
+    margin-top: 0px;
+    margin-right: 4px;
+    font-size: 75%;
+    /* min-width: 40px; */
+}
+
+.tags {
+    padding-bottom: 4px;
+}
+
+.word:focus, .description:focus {
+    outline: 0;
+}
+
+div.new-entry .word[placeholder=true], .description[placeholder=true] {
+    color: LightGrey;
+    font-style: italic;
+    font-size: 75%;
+    border-color: black;
+}
+
 body {
     background-color: white;
 }
@@ -23,6 +50,7 @@ div.word {
 	display: inline-block;
 	padding: 4px 4px 4px 4px;
 	margin-right: 4px;
+	min-width: 70px;
 }
 
 div.description {
@@ -49,7 +77,8 @@ div.entry-end {
 }
 
 .control-panel-icon {
-	margin-right: 5px;
+    margin-top: 4px;
+    margin-right: 5px;
 }
 
 .edit-icon {

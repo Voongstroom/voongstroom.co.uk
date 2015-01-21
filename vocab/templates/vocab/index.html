@@ -46,19 +46,6 @@
 
     <div class="entry-container">
       {% if user and not user.is_anonymous %}
-      <!-- New Word -->
-      <div class="new-entry">
-	<div class="word" id="new-word">
-	  New Word
-	</div>
-	<div class="description" id="new-description">
-	  Placeholder text.
-	</div>
-	<div class="control-panel">
-	  <img width="40px" src="/static/vocab/save_icon.png" class="control-panel-icon save-icon">
-	  <img width="40px" src="/static/vocab/tag_icon.png" class="control-panel-icon tag-icon">
-	</div>
-      </div>
       
       <!-- Words -->
       {% for word in words %}
@@ -72,12 +59,20 @@
 	<div class="description" id="description-{{ word.id }}">
     	  {{ word.brief_description }}
 	</div>
-	<div class="tags" id="tags-{{ word.id }}" style="display:none">
-    	  Tags:
+	{% if word.tags|length %}
+	<hr style="margin-top: 4px; margin-bottom: 4px"/>
+	<div class="tags" id="tags-{{ word.id }}">
+	  <div class="tag" style="background-color: white">
+	    Tags
+	  </div>
     	  {% for tag in word.tags %}
-    	  {{ tag }}
+	  <div class="tag" id="tags-{{ word.id }}-{{ tag }}">
+    	    {{ tag }}
+	  </div>
     	  {% endfor %}
+	  <!-- <img class="add-tag-icon" width="15px" src="/static/vocab/add_tag_icon.png" style="" /> <\!-- display: inline-block; height: 100%; vertical-align: middle;"/> -\-> -->
 	</div>
+	{% endif %}
 	<div class="entry-date" id="entry-date-{{ word.id }}" style="display:none">
     	  {{ word.entry_date }}
 	</div>
