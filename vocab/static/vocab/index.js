@@ -1,26 +1,68 @@
+function createNewEntry(){
+    var newEntry = document.createElement("div");
+    newEntry.className = "new-entry";
+    var word = document.createElement("div");
+    word.className = "word";
+    word.innerHTML = "New word";
+    var description = document.createElement("div");
+    description.className = "description";
+    description.innerHTML = "Description of new word.";
+    var controlPanel = document.createElement("div");
+    controlPanel.className = "control-panel";
+    var saveIcon = document.createElement("img");
+    saveIcon.className = "control-panel-icon save-icon";
+    saveIcon.setAttribute("width", "40px");
+    saveIcon.setAttribute("src", "/static/vocab/save_icon.png");
+    var tagIcon = document.createElement("img");
+    tagIcon.className = "control-panel-item tag-icon";
+    tagIcon.setAttribute("width", "40px");
+    tagIcon.setAttribute("src", "/static/vocab/tag_icon.png");
+    
+    newEntry.appendChild(word);
+    newEntry.appendChild(description);
+    newEntry.appendChild(controlPanel);
+    controlPanel.appendChild(saveIcon);
+    controlPanel.appendChild(tagIcon);
+
+    return newEntry;
+}
+
 $(document).ready(function(){
 
     console.log("document ready");
     $("div.new-entry").find(".word, .description").prop("contenteditable", true);
     $("div.new-entry").find(".word").focus()
 
-    $("div.new-entry").on("click", ".save-icon", function(){
+    $(document).on("click", "div.new-entry .save-icon", function(){
+	console.log("clicked new-entry");
 	console.log("save new entry");
 	var entry = $(this).parents(".new-entry");
 	entry.removeClass("new-entry");
 	entry.addClass("entry");
-
+	
 	var word = entry.find(".word");
 	var description = entry.find(".description");
 	console.log(word);
 	console.log(description);
 	word.prop("contenteditable", false);
 	description.prop("contenteditable", false);
-
+	
 	var controlPanel = entry.find(".control-panel");
 	controlPanel.slideUp("", function(){
 	    controlPanel.remove();
 	});
+	
+	var newEntry = createNewEntry();
+ 	newEntry.style.display = "none";
+	$(".entry-container").prepend(newEntry);
+	$(".entry-container").find(".new-entry").slideDown();
+	$(".entry-container").find(".new-entry").find(".word, .description").prop("contenteditable", true);
+
+	var model_id = addWord(word.text(), description.text());
+	console.log("model_id");
+	console.log(model_id);
+
+	entry.attr("model-id", model_id);
     });
     
     $("div.entry").on("click", ".control-panel-icon", function(){
@@ -44,7 +86,7 @@ $(document).ready(function(){
 	$(this).attr("src", "/static/vocab/save_icon.png");
     });
 
-    $("div.entry").on("click", ".save-icon", function(){
+    $(document).on("click", "div.entry .save-icon", function(){
 	console.log("save-icon clicked");
 	var parent = $(this).parents(".entry");
 	parent.attr("edit-mode", false);
@@ -61,7 +103,7 @@ $(document).ready(function(){
 	console.log("tag-icon clicked");
     });
     
-    $("div.entry").on("click", ".delete-icon", function(){
+    $(document).on("click", "div.entry .delete-icon", function(){
 	console.log("delete-icon clicked");
 	var parent = $(this).parents(".entry");
 	console.log("deleting: id: " + parent.attr("model-id") + ", word: " + parent.find(".word").text());
@@ -154,17 +196,8 @@ function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
-function addWord(word_id, description_id){
-    word_element = document.getElementById(word_id);
-    description_element = document.getElementById(description_id);
-
-    console.log(word_id);
-    console.log(word_element);
-    console.log(description_id);
-    console.log(description_element);
-
-    word = word_element.innerHTML;
-    description = description_element.innerHTML;
+function addWord(word, description){
+    console.log("addWord")
     console.log("word: " + word);
     console.log("description: " + description);
     
@@ -179,7 +212,7 @@ function addWord(word_id, description_id){
             }
     	}
     });
-    $.ajax({
+    return $.ajax({
      	type: 'POST',
      	url: 'add-word',
      	data: { 
@@ -188,6 +221,7 @@ function addWord(word_id, description_id){
      	},
      	success: function(msg){
             console.log(msg);
-     	}
-    });
+     	},
+	async: false,
+    }).responseText;
 }

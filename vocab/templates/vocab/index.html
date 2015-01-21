@@ -43,50 +43,53 @@
       </form>
       {% endif %}
     </div>
-    
-    {% if user and not user.is_anonymous %}
-    <!-- New Word -->
-    <div class="new-entry">
-      <div class="word" id="new-word">
-	New Word
+
+    <div class="entry-container">
+      {% if user and not user.is_anonymous %}
+      <!-- New Word -->
+      <div class="new-entry">
+	<div class="word" id="new-word">
+	  New Word
+	</div>
+	<div class="description" id="new-description">
+	  Placeholder text.
+	</div>
+	<div class="control-panel">
+	  <img width="40px" src="/static/vocab/save_icon.png" class="control-panel-icon save-icon">
+	  <img width="40px" src="/static/vocab/tag_icon.png" class="control-panel-icon tag-icon">
+	</div>
       </div>
-      <div class="description" id="new-description">
-	Placeholder text.
+      
+      <!-- Words -->
+      {% for word in words %}
+      <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}">
+	<div class="vote" id="vote-{{ word.id }}" style="display:none">
+    	  {{ word.popularity_rating }}
+	</div>
+	<div class="word" id="word-{{ word.id }}">
+    	  {{ word.word }}
+	</div>
+	<div class="description" id="description-{{ word.id }}">
+    	  {{ word.brief_description }}
+	</div>
+	<div class="tags" id="tags-{{ word.id }}" style="display:none">
+    	  Tags:
+    	  {% for tag in word.tags %}
+    	  {{ tag }}
+    	  {% endfor %}
+	</div>
+	<div class="entry-date" id="entry-date-{{ word.id }}" style="display:none">
+    	  {{ word.entry_date }}
+	</div>
+	<div class="progress" id="progress-{{ word.id }}" style="display:none">
+    	  {{ word.skill_rating }}
+	</div>
       </div>
-      <div class="control-panel">
-	<img width="40px" src="/static/vocab/save_icon.png" class="control-panel-icon save-icon">
-	<img width="40px" src="/static/vocab/tag_icon.png" class="control-panel-icon tag-icon">
-      </div>
-    </div>
-    
-    <!-- Words -->
-    {% for word in words %}
-    <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}">
-      <div class="vote" id="vote-{{ word.id }}" style="display:none">
-    	{{ word.popularity_rating }}
-      </div>
-      <div class="word" id="word-{{ word.id }}">
-    	{{ word.word }}
-      </div>
-      <div class="description" id="description-{{ word.id }}">
-    	{{ word.brief_description }}
-      </div>
-      <div class="tags" id="tags-{{ word.id }}" style="display:none">
-    	Tags:
-    	{% for tag in word.tags %}
-    	{{ tag }}
-    	{% endfor %}
-      </div>
-      <div class="entry-date" id="entry-date-{{ word.id }}" style="display:none">
-    	{{ word.entry_date }}
-      </div>
-      <div class="progress" id="progress-{{ word.id }}" style="display:none">
-    	{{ word.skill_rating }}
-      </div>
-    </div>
-    {% endfor %}
-    
-    {% endif %}
+      {% endfor %}
+      
+      {% endif %}
+      
+      </div> <!-- entry-container -->
     
     {% load staticfiles %}
     <script src="{% static "vocab/index.js" %}"></script>
