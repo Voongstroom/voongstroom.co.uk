@@ -7,22 +7,20 @@ $(document).ready(function(){
     $("div.new-entry").on("click", ".save-icon", function(){
 	console.log("save new entry");
 	var entry = $(this).parents(".new-entry");
+	entry.removeClass("new-entry");
+	entry.addClass("entry");
+
 	var word = entry.find(".word");
 	var description = entry.find(".description");
-
 	console.log(word);
 	console.log(description);
-
 	word.prop("contenteditable", false);
 	description.prop("contenteditable", false);
 
-	// addWord("new-word", "new-description");
-	console.log(entry);
-	entry.attr("id", "entry-300");
-	entry.removeClass("new-entry");
-	entry.addClass("entry");
-	// entry.find(".control-panel").slideUp();
-	console.log(entry);
+	var controlPanel = entry.find(".control-panel");
+	controlPanel.slideUp("", function(){
+	    controlPanel.remove();
+	});
     });
     
     $("div.entry").on("click", ".control-panel-icon", function(){
@@ -91,7 +89,7 @@ $(document).ready(function(){
     });
 
     // Control Panel Management
-    $("div.entry").click(function(event){
+    $(document).on("click", "div.entry", function(event){
 	console.log("clicked");
 	console.log($(this));
 	

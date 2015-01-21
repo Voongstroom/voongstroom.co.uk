@@ -45,25 +45,7 @@
     </div>
     
     {% if user and not user.is_anonymous %}
-    <!-- <\!-- Add a new word -\-> -->
-    <!-- <div class="container"> -->
-    <!--   <div class="entry" id="entyr-new-word" > -->
-    <!-- 	<form action="add-word" method="POST"> {% csrf_token %} -->
-    <!-- 	  <div class="vote" id="vote-new-word" style="display:none"> -->
-    <!-- 	  </div> -->
-    <!-- 	  <div class="word" id="word-new-word"> -->
-    <!-- 	    <input class="word-input" id="word-input-new-word" type="text" name="word" onblur="addWord('word-input-new-word', 'description-new-word')" placeholder="New word"> -->
-    <!-- 	  </div> -->
-    <!-- 	  <input class="description" id="description-new-word" type="text" name="description" onblur="addWord('word-input-new-word', 'description-new-word')" placeholder="Description..." value="" > -->
-    <!-- 	  <div class="tags" id="tags-new-word" style="display:none"> -->
-    <!-- 	  </div> -->
-    <!-- 	  <div class="entry-date" id="entry-date-new-word" style="display:none"> -->
-    <!-- 	  </div> -->
-    <!-- 	  <div class="progress" id="progress-new-word" style="display:none"> -->
-    <!-- 	  </div> -->
-    <!-- 	</form> -->
-    <!--   </div> -->
-    
+    <!-- New Word -->
     <div class="new-entry">
       <div class="word" id="new-word">
 	New Word
@@ -74,25 +56,6 @@
       <div class="control-panel">
 	<img width="40px" src="/static/vocab/save_icon.png" class="control-panel-icon save-icon">
 	<img width="40px" src="/static/vocab/tag_icon.png" class="control-panel-icon tag-icon">
-
-	<!-- var edit_icon = document.createElement("img"); -->
-	<!-- edit_icon.setAttribute("width", "40px"); -->
-	<!-- edit_icon.setAttribute("src", "/static/vocab/edit_icon.png"); -->
-	<!--     edit_icon.setAttribute("class", "control-panel-icon edit-icon"); -->
-	<!-- control_panel.appendChild(edit_icon); -->
-	
-	<!-- var tag_icon = document.createElement("img"); -->
-	<!-- tag_icon.setAttribute("width", "40px"); -->
-	<!-- tag_icon.setAttribute("src", "/static/vocab/tag_icon.png"); -->
-	<!-- tag_icon.setAttribute("class", "control-panel-icon tag-icon"); -->
-	<!-- control_panel.appendChild(tag_icon); -->
-	
-	<!-- var delete_icon = document.createElement("img"); -->
-	<!-- delete_icon.setAttribute("width", "40px"); -->
-	<!-- delete_icon.setAttribute("src", "/static/vocab/delete_icon.png"); -->
-	<!-- delete_icon.setAttribute("class", "control-panel-icon delete-icon"); -->
-	<!-- control_panel.appendChild(delete_icon); -->
-	
       </div>
     </div>
     
@@ -123,7 +86,6 @@
     </div>
     {% endfor %}
     
-    <!-- </div> -->
     {% endif %}
     
     {% load staticfiles %}
