@@ -1,44 +1,101 @@
-.control-panel{
-    border: 1px solid black;
+body {
+    background-color: white;
 }
 
-.container{
-    margin-left: auto; 
-    margin-right: auto; 
-    width:900px; 
-    font-family: 'Arial';
+div.entry {
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 4px 4px 4px 4px;
+    margin-bottom: 4px;
 }
 
-.entry{
-    border:1px solid black; 
-    border-radius:5px; 
-    clear: both; 
-    padding: 5px 5px 5px 5px; 
-    min-height: 30px; 
-    margin-bottom: 1px; 
-    background-color: MintCream;
+div.new-entry {
+    border: 2px solid blue;
+    border-radius: 10px;
+    padding: 4px 4px 4px 4px;
+    margin-bottom: 4px;
 }
 
-.word{
-    border: 1px solid; 
-    border-radius: 10px; 
-    float: left; 
-    padding:5px 5px 5px 5px; 
-    margin-right: 5px; 
-    background-color: LawnGreen;
+div.word {
+	border: 2px solid;
+	border-radius: 10px;
+	/* float: left; */
+	display: inline-block;
+	padding: 4px 4px 4px 4px;
+	margin-right: 4px;
 }
 
-.description{
-    border: 0px; 
-    padding: 0px 0px 0px 0px; 
-    margin: 0px 0px 0px 0px; 
-    background-color: MintCream;
+div.description {
+/*	margin: 2px 0px 2px 0px;*/	
+	/*padding: 4px 4px 4px 4px;*/
+	/*border: 1px solid green;*/
+	border-radius: 10px;
+	margin-top: 0px;
+	display: inline;
+/*	float: right;*/
 }
 
-.word-input{
-    border: 0px; 
-    float:left; 
-    margin-right:5px;  
-    padding: 0px 0px 0px 0px; 
-    background-color: LawnGreen;
+div.control-panel {
+    clear: both;
+    margin-top: 4px;
+    /*margin-bottom: 0px;*/
+    /*border: 1px solid blue;*/
+    /*padding-bottom: 0px;*/
+    font-size: 0px;
 }
+
+div.entry-end {
+    clear: both;
+}
+
+.control-panel-icon {
+	margin-right: 5px;
+}
+
+.edit-icon {
+}
+
+/* .control-panel{ */
+/*     border: 1px solid black; */
+/* } */
+
+/* .container{ */
+/*     margin-left: auto;  */
+/*     margin-right: auto;  */
+/*     width:900px;  */
+/*     font-family: 'Arial'; */
+/* } */
+
+/* .entry{ */
+/*     border:1px solid black;  */
+/*     border-radius:5px;  */
+/*     clear: both;  */
+/*     padding: 5px 5px 5px 5px;  */
+/*     min-height: 30px;  */
+/*     margin-bottom: 1px;  */
+/*     background-color: MintCream; */
+/* } */
+
+/* .word{ */
+/*     border: 1px solid;  */
+/*     border-radius: 10px;  */
+/*     float: left;  */
+/*     padding:5px 5px 5px 5px;  */
+/*     margin-right: 5px;  */
+/*     background-color: LawnGreen; */
+/* } */
+
+/* .description{ */
+/*     border: 0px;  */
+/*     padding: 0px 0px 0px 0px;  */
+/*     margin: 0px 0px 0px 0px;  */
+/*     background-color: MintCream; */
+/* } */
+
+/* .word-input{ */
+/*     border: 0px;  */
+/*     float:left;  */
+/*     margin-right:5px;   */
+/*     padding: 0px 0px 0px 0px;  */
+/*     background-color: LawnGreen; */
+/* } */

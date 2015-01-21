@@ -19,9 +19,27 @@ def add_word(request):
         return django.http.HttpResponse(word.id)
     return HttpResponse('word not added. word: {0}'.format(word) + ', description: {0}'.format(description))
 
+def delete_entry(request):
+    user = request.user
+    user = user if not user.is_anonymous() else None
+    print 'request.POST: {}'.format(request.POST)
+    print 'request.POST["id"]: {}'.format(request.POST['id'])
+    id = request.POST['id'] if 'id' in request.POST else None
+    word = None
+    print 'id: {}'.format(id)
+    if user and id:
+        try:
+            entry = Word.objects.get(id=id)
+        except django.core.exceptions.ObjectDoesNotExist:
+            entry = None
+        if(entry):
+            word = entry.word
+            entry.delete()
+    return HttpResponse('Successfully deleted: id: {}, word: {}'.format(id, word))
+
 def index(request, user=None):
     user = request.user
-    words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user))
+    words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user), key=lambda word: word.word)
     for word in words:
         tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
         word.tags = tags
