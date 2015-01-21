@@ -69,7 +69,7 @@ $(document).ready(function(){
 	console.log("control-panel-icon clicked");
     });
     
-    $("div.entry").on("click", ".edit-icon", function(){
+    $(document).on("click", "div.entry .edit-icon", function{
 	console.log("edit-icon clicked");
 	var parent = $(this).parents(".entry");
 	parent.attr("edit-mode", true);
