@@ -1,3 +1,4 @@
+import json
 import django
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -7,6 +8,57 @@ from vocab.models import Word, Comment, Tag, TagWordRelationship
 from django.contrib.auth.models import User
 
 # Create your views here.
+def toggle_favourite(request):
+    user = request.user
+    user = user if not user.is_anonymous() else None
+    id = request.POST["id"] if "id" in request.POST else None
+    rating = request.POST["rating"] if "rating" in request.POST else None
+    word = Word.objects.get(id=id)
+    if word:
+        word.popularity_rating = rating
+        word.save()
+        return HttpResponse("Rating updated: {}".format(rating))
+    return HttpResponse('Invalid input')
+
+def delete_tag(request):
+    user = request.user
+    user = user if not user.is_anonymous() else None
+    id = request.POST["id"] if "id" in request.POST else None
+    word = Word.objects.get(id=id)
+    tag = request.POST["tag"] if "tag" in request.POST else None
+    print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
+    if word and tag:
+        tag = Tag.objects.get(name=tag)
+        try:
+            tag_word = TagWordRelationship.objects.get(word=id, tag=tag.id)
+            print tag_word
+        except django.core.exceptions.ObjectDoesNotExist:
+            return HttpResponse("Tag - Word not found");
+        tag_word.delete();
+        return HttpResponse("Tag removed");
+    return HttpResponse('Invalid input')
+
+def add_tag(request):
+    user = request.user
+    user = user if not user.is_anonymous() else None
+    id = request.POST["id"] if "id" in request.POST else None
+    word = Word.objects.get(id=id)
+    tag = request.POST["tag"] if "tag" in request.POST else None
+    print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
+    if word and tag:
+        try:
+            tag = Tag.objects.get(name=tag)
+        except django.core.exceptions.ObjectDoesNotExist:
+            tag = Tag(name=tag)
+            tag.save()
+        try:
+            tag_word = TagWordRelationship.objects.get(word=word.id, tag=tag.id)
+        except django.core.exceptions.ObjectDoesNotExist:
+            tag_word = TagWordRelationship(word=word, tag=tag)
+            tag_word.save()
+        return HttpResponse("All good");
+    return HttpResponse('Invalid input')
+
 def add_word(request):
     user = request.user
     user = user if request.user.is_anonymous() == False else None

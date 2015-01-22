@@ -49,7 +49,7 @@
       
       <!-- Words -->
       {% for word in words %}
-      <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}">
+      <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}" favourite="{{ word.popularity_rating }}">
 	<div class="vote" id="vote-{{ word.id }}" style="display:none">
     	  {{ word.popularity_rating }}
 	</div>
@@ -66,7 +66,8 @@
 	    Tags
 	  </div>
     	  {% for tag in word.tags %}
-	  <div class="tag" id="tags-{{ word.id }}-{{ tag }}">
+	  <div class="tag" id="tags-{{ word.id }}-{{ tag }}" style="position: relative;" value="{{ tag }}">
+	    <img class="tag-delete-icon" width="10px" src="/static/vocab/delete_icon.png" style="position: absolute; top: -6px; left: -6px; display: none;" />
     	    {{ tag }}
 	  </div>
     	  {% endfor %}

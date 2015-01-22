@@ -1,3 +1,23 @@
+/* .entry-container { */
+/*     background-color: gray; */
+/* } */
+
+body {
+    background-color: Black;
+}
+
+.entry[favourite="1"] .word {
+    background-color: yellow;
+    /* border-color: yellow; */
+    /* outline: yellow solid 3px; */
+    /* box-shadow: 0px 0px 0px 2pt yellow; */
+}
+
+.entry:not([favourite="1"]) .favourite-icon {
+    opacity: 0.4;
+    grayscale: 1.;
+}
+
 .tag {
     background-color: LightBlue;
     display: inline;
@@ -26,7 +46,7 @@ div.new-entry .word[placeholder=true], .description[placeholder=true] {
 }
 
 body {
-    background-color: white;
+    background-color: gray;
 }
 
 div.entry {
@@ -34,6 +54,7 @@ div.entry {
     border-radius: 10px;
     padding: 4px 4px 4px 4px;
     margin-bottom: 4px;
+    background-color: white;
 }
 
 div.new-entry {
@@ -41,6 +62,7 @@ div.new-entry {
     border-radius: 10px;
     padding: 4px 4px 4px 4px;
     margin-bottom: 4px;
+    background-color: white;
 }
 
 div.word {

@@ -1,3 +1,106 @@
+function createTags(){
+    var tags = document.createElement("div");
+    tags.className = "tags";
+    var label = document.createElement("div");
+    label.className = "tag";
+    label.style.backgroundColor = "white";
+    label.innerHTML = "Tags";
+    tags.appendChild(label);
+    return $(tags);
+}
+
+function toggleFavourite(id, rating) {
+    console.log("toggleFavourite");
+    console.log("id: " + id);
+    console.log("rating: " + rating);
+    
+    // Initialize the Ajax request
+    var csrftoken = getCookie('csrftoken');
+    console.log("csrftoken: " + csrftoken.toString());
+    var xhr = new XMLHttpRequest();
+    $.ajaxSetup({
+     	beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+    		xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+    	}
+    });
+    return $.ajax({
+     	type: 'POST',
+     	url: 'toggle-favourite',
+     	data: { 
+	    'id': id,
+            'rating': rating, 
+     	},
+     	success: function(msg){
+            console.log(msg);
+     	},
+	async: true,
+    }).responseText;
+}
+
+
+function deleteTag(id, tag) {
+    console.log("deleteTag");
+    console.log("id: " + id);
+    console.log("tag: " + tag);
+
+    // Initialize the Ajax request
+    var csrftoken = getCookie('csrftoken');
+    console.log("csrftoken: " + csrftoken.toString());
+    var xhr = new XMLHttpRequest();
+    $.ajaxSetup({
+     	beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+    		xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+    	}
+    });
+    return $.ajax({
+     	type: 'POST',
+     	url: 'delete-tag',
+     	data: { 
+	    'id': id,
+            'tag': tag, 
+     	},
+     	success: function(msg){
+            console.log(msg);
+     	},
+	async: true,
+    }).responseText;
+}
+
+function addTag(id, tag){
+    console.log("addTag");
+    console.log("id: " + id);
+    console.log("tag: " + tag);
+
+    // Initialize the Ajax request
+    var csrftoken = getCookie('csrftoken');
+    console.log("csrftoken: " + csrftoken.toString());
+    var xhr = new XMLHttpRequest();
+    $.ajaxSetup({
+     	beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+    		xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+    	}
+    });
+    return $.ajax({
+     	type: 'POST',
+     	url: 'add-tag',
+     	data: { 
+	    'id': id,
+            'tag': tag, 
+     	},
+     	success: function(msg){
+            console.log(msg);
+     	},
+	async: true,
+    }).responseText;
+}
+
+
 function editEntry(id, word, description){
     console.log("editEntry");
     console.log("id: " + id);
@@ -44,63 +147,146 @@ function createNewEntry(){
     description.innerHTML = 'Description of new word.';
     description.setAttribute("contenteditable", true);
     description.setAttribute("placeholder", true);
+    var hr = document.createElement("hr");
+    var tags = document.createElement("div");
+    tags.className = "tags";
+    tags.style.position = "relative";
+    var tag = document.createElement("div");
+    tag.className = "tag";
+    tag.innerHTML = "Tags";
+    tag.style.backgroundColor = "white";
     var controlPanel = document.createElement("div");
     controlPanel.className = "control-panel";
     var saveIcon = document.createElement("img");
     saveIcon.className = "control-panel-icon save-icon";
     saveIcon.setAttribute("width", "40px");
     saveIcon.setAttribute("src", "/static/vocab/save_icon.png");
-    var tagIcon = document.createElement("img");
-    tagIcon.className = "control-panel-item tag-icon";
-    tagIcon.setAttribute("width", "40px");
-    tagIcon.setAttribute("src", "/static/vocab/tag_icon.png");
+    // var tagIcon = document.createElement("img");
+    // tagIcon.className = "control-panel-item tag-icon";
+    // tagIcon.setAttribute("width", "40px");
+    // tagIcon.setAttribute("src", "/static/vocab/tag_icon.png");
     
     newEntry.appendChild(word);
     newEntry.appendChild(description);
+    // newEntry.appendChild(hr);
+    // newEntry.appendChild(tags);
+    // tags.appendChild(tag);
     newEntry.appendChild(controlPanel);
     controlPanel.appendChild(saveIcon);
-    controlPanel.appendChild(tagIcon);
+    // controlPanel.appendChild(tagIcon);
 
     return newEntry;
 }
 
 $(document).ready(function(){
-
     // Document initialisation
     console.log("document ready");
     $("div.entry-container").prepend(createNewEntry());
     $("div.new-entry").find(".word, .description").find(".input-text").prop("contenteditable", true);
     $("div.new-entry").find(".word").find(".input-text").focus();
 
-    // Add tags
-    $(document).on("click", ".add-tag-icon", function() {
+    // Toggle Favourite
+    $(document).on("click", ".favourite-icon", function() {
 	var entry = $(this).parents(".entry");
-	var tags = $(this).parents(".tags");
-	var newTag = document.createElement("div");
-	newTag.className = "tag";
-	// newTag.innerHTML = "New tag";
-	// newTag.setAttribute("placeholder", true);
-//	newTag.setAttribute("display", "none");
-	$(this).before(newTag);
-	// tags.find(newTag).hide('slide',{direction:'right'},1000);
-	// tags.find(newTag).show("slide", {direction: "left"}, 1000);
-	// tags.find(newTag).toggle("slide", {direction: "left"}, 1000);
-	// tags.find(newTag).animate({width: "50px"});
-	// tags.find(newTag).show("slow");
-	tags.find(newTag).slideDown();
-	entry.attr("edit-mode", true);
-	newTag.setAttribute("contenteditable", true);
-	tags.find(newTag).focus();
+	if(entry.attr("favourite") == "1"){
+	    entry.attr("favourite", "0");
+	    toggleFavourite(entry.attr("model-id"), "0");
+	}
+	else {
+	    entry.attr("favourite", "1");
+	    toggleFavourite(entry.attr("model-id"), "1");
+	}
     });
 
-    // Save tag or cancel
-    $(document).on("blur", ".tag", function() {
-	var entry = $(this).parents(".entry");
-	if($(this).text().length == 0){
-	    $(this).remove();
+    // Add tags
+    $(document).on("click", ".entry .tag-icon", function() {
+	var tagIcon = $(this);
+	var entry = tagIcon.parents(".entry, .new-entry");
+	var tags = entry.find(".tags");
+	console.log(tags.size);
+	if (tags.size() == 0){
+	    var hr = document.createElement("hr");
+	    hr.style.marginBottom = "4px";
+	    hr.style.marginTop = "4px";
+	    tags = createTags()
+	    tags.css("display", "none");
+	    var description = entry.find(".description");
+	    tags.insertAfter(description);
+	    $(hr).insertAfter(description);
+	    $(tags).slideDown();
+	    // (tags).css("bottom-margin", "4px");
 	}
+	var newTag = document.createElement("div");
+	newTag.className = "tag";
+	newTag.setAttribute("contenteditable", true);
+	tags.append(newTag);
+	$(newTag).focus();
+	tagIcon.removeClass("tag-icon");
+	tagIcon.addClass("tag-save-icon");
+	tagIcon.attr("src", "/static/vocab/save_icon.png");
+	tags.find(".tag-delete-icon").show()
+	entry.attr("edit-mode", true);
+    });
+
+    $(document).on("click", ".tag-save-icon", function() {
+	var tagIcon = $(this);
+	var entry = tagIcon.parents(".entry, .new-entry");
+	var tags = entry.find(".tags");
+	var newTag = tags.find(".tag:last-child");
+	tagIcon.removeClass("tag-save-icon");
+	tagIcon.addClass("tag-icon");
+	tagIcon.attr("src", "/static/vocab/tag_icon.png");
+	$(newTag).prop("contentEditable", false);
+	console.log($(newTag));
+	if(newTag.text().length == 0){
+	    $(newTag).remove();
+	} else {
+	    addTag(entry.attr("model-id"), $(newTag).text());
+	}
+	var deletedTags = tags.find(".tag[deleted=true]");
+	console.log("deleted tags: " );
+	console.log(deletedTags);
+	deletedTags.each(function(){
+	    deleteTag(entry.attr("model-id"), $(this).attr("value"));
+	});
+	tags.find(".tag-delete-icon").hide();
 	entry.attr("edit-mode", false);
     });
+
+    $(document).on("click", ".tag-delete-icon", function() {
+	var tag = $(this).parents(".tag");
+	tag.hide();
+	tag.attr("deleted", true);
+    });
+
+//     $(document).on("click", ".add-tag-icon", function() {
+// 	var entry = $(this).parents(".entry");
+// 	var tags = $(this).parents(".tags");
+// 	var newTag = document.createElement("div");
+// 	newTag.className = "tag";
+// 	// newTag.innerHTML = "New tag";
+// 	// newTag.setAttribute("placeholder", true);
+// //	newTag.setAttribute("display", "none");
+// 	$(this).before(newTag);
+// 	// tags.find(newTag).hide('slide',{direction:'right'},1000);
+// 	// tags.find(newTag).show("slide", {direction: "left"}, 1000);
+// 	// tags.find(newTag).toggle("slide", {direction: "left"}, 1000);
+// 	// tags.find(newTag).animate({width: "50px"});
+// 	// tags.find(newTag).show("slow");
+// 	tags.find(newTag).slideDown();
+// 	entry.attr("edit-mode", true);
+// 	newTag.setAttribute("contenteditable", true);
+// 	tags.find(newTag).focus();
+//     });
+
+//     // Save tag or cancel
+//     $(document).on("blur", ".tag", function() {
+// 	var entry = $(this).parents(".entry");
+// 	if($(this).text().length == 0){
+// 	    $(this).remove();
+// 	}
+// 	entry.attr("edit-mode", false);
+//     });
 
     // Placeholder text for new entry
     $(document).on("focus", "div.new-entry .word[placeholder=true]", function() {
@@ -262,6 +448,12 @@ $(document).ready(function(){
 	    tag_icon.setAttribute("src", "/static/vocab/tag_icon.png");
 	    tag_icon.setAttribute("class", "control-panel-icon tag-icon");
 	    control_panel.appendChild(tag_icon);
+
+	    var favourite_icon = document.createElement("img");
+	    favourite_icon.setAttribute("width", "35px");
+	    favourite_icon.setAttribute("src", "/static/vocab/favourite_icon.png");
+	    favourite_icon.className = "control-panel-icon favourite-icon";
+	    control_panel.appendChild(favourite_icon);
 	    
 	    var delete_icon = document.createElement("img");
 	    delete_icon.setAttribute("width", "35px");

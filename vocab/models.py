@@ -31,4 +31,4 @@ class TagWordRelationship(models.Model):
     tag = models.ForeignKey(Tag)
     word = models.ForeignKey(Word)
     def __str__(self):
-        return '{0}: {1}'.format(word, tag)
+        return '{0}: {1}'.format(self.word, self.tag)
