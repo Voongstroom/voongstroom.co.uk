@@ -1,6 +1,5 @@
-/* .entry-container { */
-/*     background-color: gray; */
-/* } */
+.entry-container {
+}
 
 body {
     background-color: Black;
@@ -46,7 +45,7 @@ div.new-entry .word[placeholder=true], .description[placeholder=true] {
 }
 
 body {
-    background-color: gray;
+    background-color: white;
 }
 
 div.entry {
