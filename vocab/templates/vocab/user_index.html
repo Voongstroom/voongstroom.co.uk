@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/styles.css' %}">
+  </head>
+  
+  <body>
+
+    <header>
+      <a href="/vocab/sign-out">
+	<button>
+	  Sign Out
+	</button>
+      </a>
+      <a href="/vocab">
+	<button>
+	  Home
+	</button>
+      </a>
+      <!-- Login and Sign up -->
+      <!-- <div class="user-panel" style="margin-bottom: 20px;"> -->
+      <!-- 	{% if user and not user.is_anonymous %} -->
+      <!-- 	Logged in as {{ user }} -->
+      <!-- 	<a href="logout"> -->
+      <!-- 	  <button> -->
+      <!-- 	  Log Out -->
+      <!-- 	  </button> -->
+      <!-- 	</a> -->
+      <!-- 	{% else %} -->
+      <!-- 	<form action="sign-up" method="POST"> {% csrf_token %} -->
+      <!-- 	  <fieldset> -->
+      <!-- 	    <legend> -->
+      <!-- 	      New User: -->
+      <!-- 	    </legend> -->
+      <!-- 	    User Name: -->
+      <!-- 	    <input type="text" name="new-username"> -->
+      <!-- 	    Password: -->
+      <!-- 	    <input type="password" name="new-password"> -->
+      <!-- 	    <input type="submit" value="Submit"> -->
+      <!-- 	  </fieldset> -->
+      <!-- 	</form> -->
+      <!-- 	<form action="login" method="POST"> {% csrf_token %} -->
+      <!-- 	  <fieldset> -->
+      <!-- 	    <legend> -->
+      <!-- 	      Existing User: -->
+      <!-- 	  </legend> -->
+      <!-- 	    User Name: -->
+      <!-- 	    <input type="text" name="username"> -->
+      <!-- 	    Password: -->
+      <!-- 	    <input type="password" name="password"> -->
+      <!-- 	    <input type="submit" value="Log in"> -->
+      <!-- 	  </fieldset> -->
+      <!-- 	</form> -->
+      <!-- 	{% endif %} -->
+      <!-- </div> -->
+    </header>
+    
+    <aside>
+      <section class="side-section" id="notebooks">
+	<nav>
+	  Notebooks
+	  <hr />
+	  <ul>
+	    <li> All </li>
+	    <li> Vocab </li>
+	    <li> Python </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	    <li> Mathematics </li>
+	  </ul>
+	</nav>
+      </section> 
+      <section class="side-section" id="search-and-filter">
+	Search and Filter
+	<hr />
+	<div id="search" contenteditable="true">
+	  Search
+	</div>
+	Tags: <br />
+	Sort: 
+      </section>
+      <section class="side-section" id="friends">
+	Friends
+	<hr />
+      </section>
+      <section class="side-section" id="trending">
+	Trending
+	<hr />
+	<ul>
+	  <li> Capital Cities </li>
+	  <li> Brain Anatomy </li>
+	  <li> Latin Words </li>
+	  <li> CSS Styles </li>
+	</ul>
+      </section>
+      <section class="side-section" id="word-of-the-day">
+	Word of the Day!
+	<hr />
+	<div class="word">
+	  Intransigence
+	</div>
+	<div class="description">
+	  Refusing to compromise or agree
+	</div>
+      </section>
+    </aside>
+    
+    <section id="main-section">
+    </section>
+    
+    <footer>
+    </footer>
+    
+    {% load staticfiles %}
+    <script src="{% static "vocab/user_index/user_index.js" %}"></script>
+    
+  </body>
+</html>
+
