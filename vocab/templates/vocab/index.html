@@ -7,85 +7,140 @@
   </head>
   
   <body>
-    <!-- Login and Sign up -->
-    <div class="user-panel" style="margin-bottom: 20px;">
-      {% if user and not user.is_anonymous %}
-      Logged in as {{ user }}
-      <a href="logout">
-	<button>
-	  Log Out
-	</button>
-      </a>
-      {% else %}
-      <form action="sign-up" method="POST"> {% csrf_token %}
-	<fieldset>
-	  <legend>
-	    New User:
-	  </legend>
-	  User Name:
-	  <input type="text" name="new-username">
-	  Password:
-	  <input type="password" name="new-password">
-	  <input type="submit" value="Submit">
-	</fieldset>
-      </form>
-      <form action="login" method="POST"> {% csrf_token %}
-	<fieldset>
-	  <legend>
-	    Existing User:
-	  </legend>
-	  User Name:
-	  <input type="text" name="username">
-	  Password:
-	  <input type="password" name="password">
-	  <input type="submit" value="Log in">
-	</fieldset>
-      </form>
-      {% endif %}
-    </div>
 
-    <div class="entry-container">
-      {% if user and not user.is_anonymous %}
-      
-      <!-- Words -->
-      {% for word in words %}
-      <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}" favourite="{{ word.popularity_rating }}">
-	<div class="vote" id="vote-{{ word.id }}" style="display:none">
-    	  {{ word.popularity_rating }}
-	</div>
-	<div class="word" id="word-{{ word.id }}">
-    	  {{ word.word }}
-	</div>
-	<div class="description" id="description-{{ word.id }}">
-    	  {{ word.brief_description }}
-	</div>
-	{% if word.tags|length %}
-	<hr style="margin-top: 4px; margin-bottom: 4px"/>
-	<div class="tags" id="tags-{{ word.id }}">
-	  <div class="tag" style="background-color: white">
-	    Tags
-	  </div>
-    	  {% for tag in word.tags %}
-	  <div class="tag" id="tags-{{ word.id }}-{{ tag }}" style="position: relative;" value="{{ tag }}">
-	    <img class="tag-delete-icon" width="10px" src="/static/vocab/delete_icon.png" style="position: absolute; top: -6px; left: -6px; display: none;" />
-    	    {{ tag }}
-	  </div>
-    	  {% endfor %}
-	  <!-- <img class="add-tag-icon" width="15px" src="/static/vocab/add_tag_icon.png" style="" /> <\!-- display: inline-block; height: 100%; vertical-align: middle;"/> -\-> -->
-	</div>
+    <header>
+      <!-- Login and Sign up -->
+      <div class="user-panel" style="margin-bottom: 20px;">
+	{% if user and not user.is_anonymous %}
+	Logged in as {{ user }}
+	<a href="logout">
+	  <button>
+	  Log Out
+	  </button>
+	</a>
+	{% else %}
+	<form action="sign-up" method="POST"> {% csrf_token %}
+	  <fieldset>
+	    <legend>
+	      New User:
+	    </legend>
+	    User Name:
+	    <input type="text" name="new-username">
+	    Password:
+	    <input type="password" name="new-password">
+	    <input type="submit" value="Submit">
+	  </fieldset>
+	</form>
+	<form action="login" method="POST"> {% csrf_token %}
+	  <fieldset>
+	    <legend>
+	      Existing User:
+	  </legend>
+	    User Name:
+	    <input type="text" name="username">
+	    Password:
+	    <input type="password" name="password">
+	    <input type="submit" value="Log in">
+	  </fieldset>
+	</form>
 	{% endif %}
-	<div class="entry-date" id="entry-date-{{ word.id }}" style="display:none">
-    	  {{ word.entry_date }}
-	</div>
-	<div class="progress" id="progress-{{ word.id }}" style="display:none">
-    	  {{ word.skill_rating }}
-	</div>
       </div>
-      {% endfor %}
       
-      {% endif %}
+    </header>
+    
+    <aside>
+      <section class="side-section" id="notebooks">
+	<nav>
+	  Notebooks
+	  <hr />
+	  <ul>
+	    <li> All </li>
+	    <li> Vocab </li>
+	    <li> Python </li>
+	    <li> Mathematics </li>
+	  </ul>
+	</nav>
+      </section> 
+      <section class="side-section" id="search-and-filter">
+	Search and Filter
+	<hr />
+	<div id="search" contenteditable="true">
+	  Search
+	</div>
+	Tags: <br />
+	Sort: 
+      </section>
+      <section class="side-section" id="social">
+	Social
+	<hr />
+      </section>
+      <section class="side-section" id="trending">
+	Trending
+	<hr />
+	<ul>
+	  <li> Capital Cities </li>
+	  <li> Brain Anatomy </li>
+	  <li> Latin Words </li>
+	  <li> CSS Styles </li>
+	</ul>
+      </section>
+      <section class="side-section" id="word-of-the-day">
+	Word of the Day!
+	<hr />
+	<div class="word">
+	  Intransigence
+	</div>
+	<div class="description">
+	  Refusing to compromise or agree
+	</div>
+      </section>
+    </aside>
+    
+    <section id="main-section">
+      <!-- {% if user and not user.is_anonymous %} -->
       
-      </div> <!-- entry-container -->
+      <!-- <\!-- Words -\-> -->
+      <!-- {% for word in words %} -->
+      <!-- <div class="entry" id="entry-{{ word.id }}" model-id="{{ word.id }}" favourite="{{ word.popularity_rating }}"> -->
+      <!-- 	<div class="vote" id="vote-{{ word.id }}" style="display:none"> -->
+      <!-- 	  {{ word.popularity_rating }} -->
+      <!-- 	</div> -->
+      <!-- 	<div class="word" id="word-{{ word.id }}"> -->
+      <!-- 	  {{ word.word }} -->
+      <!-- 	</div> -->
+      <!-- 	<div class="description" id="description-{{ word.id }}"> -->
+      <!-- 	  {{ word.brief_description }} -->
+      <!-- 	</div> -->
+      <!-- 	{% if word.tags|length %} -->
+      <!-- 	<hr style="margin-top: 4px; margin-bottom: 4px"/> -->
+      <!-- 	<div class="tags" id="tags-{{ word.id }}"> -->
+      <!-- 	  <div class="tag" style="background-color: white"> -->
+      <!-- 	    Tags -->
+      <!-- 	  </div> -->
+      <!-- 	  {% for tag in word.tags %} -->
+      <!-- 	  <div class="tag" id="tags-{{ word.id }}-{{ tag }}" style="position: relative;" value="{{ tag }}"> -->
+      <!-- 	    <img class="tag-delete-icon" width="10px" src="/static/vocab/delete_icon.png" style="position: absolute; top: -6px; left: -6px; display: none;" /> -->
+      <!-- 	    {{ tag }} -->
+      <!-- 	  </div> -->
+      <!-- 	  {% endfor %} -->
+      <!-- 	  <\!-- <img class="add-tag-icon" width="15px" src="/static/vocab/add_tag_icon.png" style="" /> <\\!-- display: inline-block; height: 100%; vertical-align: middle;"/> -\\-> -\-> -->
+      <!-- 	</div> -->
+      <!-- 	{% endif %} -->
+      <!-- 	<div class="entry-date" id="entry-date-{{ word.id }}" style="display:none"> -->
+      <!-- 	  {{ word.entry_date }} -->
+      <!-- 	</div> -->
+      <!-- 	<div class="progress" id="progress-{{ word.id }}" style="display:none"> -->
+      <!-- 	  {{ word.skill_rating }} -->
+      <!-- 	</div> -->
+      <!-- </div> -->
+      <!-- {% endfor %} -->
+      
+      <!-- {% endif %} -->
+      
+    </section>
+    
+    <footer>
+    </footer>
     
     {% load staticfiles %}
     <script src="{% static "vocab/index.js" %}"></script>

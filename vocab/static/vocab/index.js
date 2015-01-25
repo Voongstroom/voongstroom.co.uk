@@ -1,3 +1,43 @@
+function getFriendsList() {
+    console.log("getFriendsList");
+    var response = $.ajax({
+	type: 'GET',
+	url: '../../get-users',
+     	success: function(msg){
+            console.log(msg);
+     	},
+	async: false,
+    }).responseText;
+    users = $.parseJSON(response).users;
+    console.log("users");
+    console.log(users);
+    return users;
+}
+
+function buildFriendsElement(username) {
+    console.log("buildFriendsElement");
+    var friends = getFriendsList();
+    var friendsList = buildFriendsList(friends);
+    $(".side-section#social").append(friendsList);
+}
+
+function buildFriendsList(friends) {
+    console.log("buildFriendsList");
+    console.log("friends: " + friends);
+    var friendsList = [];
+    for(i=0; i<friends.length; i++) {
+	var username = friends[i];
+	var friendElement = document.createElement("a");
+	friendElement.className = "friend";
+	friendElement.innerHTML = username
+	friendElement.setAttribute("href", "http://www.voongstroom.co.uk/vocab/user/" + username);
+	friendsList[friendsList.length] = friendElement;
+	friendsList[friendsList.length] = document.createElement("br");
+	console.log("friend: " + friends[i]);
+    }
+    return $(friendsList);
+}
+
 function createTags(){
     var tags = document.createElement("div");
     tags.className = "tags";
@@ -178,12 +218,94 @@ function createNewEntry(){
     return newEntry;
 }
 
+function buildEntries() {
+    console.log("buildEntries");
+    var entries = getEntries();
+    var elements = [];
+    console.log(entries);
+    console.log(entries.length);
+    for(i=0; i<entries.length; i++) {
+	console.log(i);
+     	var entry = entries[i];
+	var entryElement = buildEntryElement(entry);
+	elements[elements.length] = entryElement;
+    }
+    $("#main-section").append($(elements));
+}
+
+function getEntries() {
+    console.log("getEntries");
+    var response = $.ajax({
+    	type: 'GET',
+    	url: 'get-entries',
+     	success: function(msg){
+            console.log(msg);
+     	},
+    	async: false,
+    }).responseText;
+    entries = $.parseJSON(response);
+    console.log("entries");
+    console.log(entries);
+    return entries;
+}
+
+function buildEntryElement(entry) {
+    console.log("buildEntryElement");
+    var entryElement = document.createElement("div");
+    entryElement.className = "entry";
+    entryElement.setAttribute("model-id", entry.id);
+    entryElement.setAttribute("favourite", entry.popularity_rating);
+    var word = document.createElement("div");
+    word.className = "word";
+    word.innerHTML = entry.word;
+    var description = document.createElement("div");
+    description.className = "description";
+    description.innerHTML = entry.brief_description;
+    var tags_separator = document.createElement("hr");
+    tags_separator.className = "tags-separator";
+    var tags = entry.tags;
+    var tags_element = document.createElement("div");
+    tags_element.className = "tags";
+    var tags_label = document.createElement("div");
+    tags_label.className = "tag-label tag";
+    tags_label.innerHTML = "Tags";
+
+    entryElement.appendChild(word);
+    entryElement.appendChild(description);
+    entryElement.appendChild(tags_separator);
+    entryElement.appendChild(tags_element);
+    tags_element.appendChild(tags_label);
+
+    for(var i=0; i<tags.length; i++) {
+	// <!-- 	    <img class="tag-delete-icon" width="10px" src="/static/vocab/delete_icon.png" style="position: absolute; top: -6px; left: -6px; display: none;" /> -->
+    	var tag = document.createElement("div");
+    	tag.className = "tag";
+    	tag.innerHTML = tags[i];
+	tag.setAttribute("value", tag.innerHTML);
+    	tags_element.appendChild(tag);
+	var tagDeleteIcon = document.createElement("img");
+	tagDeleteIcon.className = "tag-delete-icon";
+	tagDeleteIcon.setAttribute("width", "10px");
+	tagDeleteIcon.setAttribute("src", "/static/vocab/delete_icon.png");
+	$(tagDeleteIcon).hide();
+	tag.appendChild(tagDeleteIcon);
+    }
+    
+    if(tags.length == 0) {
+    	tags_separator.style.display = "none";
+    	tags_element.style.display = "none";
+    }
+    return entryElement;
+}
+
 $(document).ready(function(){
     // Document initialisation
     console.log("document ready");
-    $("div.entry-container").prepend(createNewEntry());
-    $("div.new-entry").find(".word, .description").find(".input-text").prop("contenteditable", true);
-    $("div.new-entry").find(".word").find(".input-text").focus();
+    $("#main-section").prepend(createNewEntry());
+    $(".new-entry").find(".word, .description").find(".input-text").prop("contenteditable", true);
+    $(".new-entry").find(".word").find(".input-text").focus();
+    buildFriendsElement();
+    buildEntries();
 
     // Toggle Favourite
     $(document).on("click", ".favourite-icon", function() {
@@ -204,18 +326,8 @@ $(document).ready(function(){
 	var entry = tagIcon.parents(".entry, .new-entry");
 	var tags = entry.find(".tags");
 	console.log(tags.size);
-	if (tags.size() == 0){
-	    var hr = document.createElement("hr");
-	    hr.style.marginBottom = "4px";
-	    hr.style.marginTop = "4px";
-	    tags = createTags()
-	    tags.css("display", "none");
-	    var description = entry.find(".description");
-	    tags.insertAfter(description);
-	    $(hr).insertAfter(description);
-	    $(tags).slideDown();
-	    // (tags).css("bottom-margin", "4px");
-	}
+	entry.find(".tags-separator").slideDown();
+	$(tags).slideDown();
 	var newTag = document.createElement("div");
 	newTag.className = "tag";
 	newTag.setAttribute("contenteditable", true);
@@ -242,6 +354,13 @@ $(document).ready(function(){
 	    $(newTag).remove();
 	} else {
 	    addTag(entry.attr("model-id"), $(newTag).text());
+	    var tagDeleteIcon = document.createElement("img");
+	    tagDeleteIcon.className = "tag-delete-icon";
+	    tagDeleteIcon.setAttribute("width", "10px");
+	    tagDeleteIcon.setAttribute("src", "/static/vocab/delete_icon.png");
+	    $(tagDeleteIcon).hide();
+	    newTag.attr("value", newTag.text());
+	    newTag.append(tagDeleteIcon);
 	}
 	var deletedTags = tags.find(".tag[deleted=true]");
 	console.log("deleted tags: " );
@@ -339,9 +458,9 @@ $(document).ready(function(){
 	
 	var newEntry = createNewEntry();
  	newEntry.style.display = "none";
-	$(".entry-container").prepend(newEntry);
-	$(".entry-container").find(".new-entry").slideDown();
-	$(".entry-container").find(".new-entry").find(".word, .description").prop("contenteditable", true);
+	$("#main-section").prepend(newEntry);
+	$("#main-section").find(".new-entry").slideDown();
+	$("#main-section").find(".new-entry").find(".word, .description").prop("contenteditable", true);
 
 	// send new word to server
 	var model_id = addWord(word.text(), description.text());

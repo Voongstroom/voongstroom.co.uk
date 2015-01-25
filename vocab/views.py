@@ -1,3 +1,4 @@
+import collections
 import json
 import django
 from django.shortcuts import render
@@ -8,6 +9,62 @@ from vocab.models import Word, Comment, Tag, TagWordRelationship
 from django.contrib.auth.models import User
 
 # Create your views here.
+def get_entries(request, username):
+    user = User.objects.get(username=username)
+    words = Word.objects.filter(author=user).order_by("word")
+    for word in words:
+        tags = []
+        for tag_word in TagWordRelationship.objects.filter(word=word):
+            tags.append(tag_word.tag.name)
+        word.tags = tags
+    
+    a = []
+    for word in words:
+        a.append({
+            "id": word.id,
+            "word": word.word,
+            "brief_description": word.brief_description,
+            "popularity_rating": word.popularity_rating,
+            "tags": word.tags,
+        })
+
+    # print json.dumps(a)
+    # words_json = django.core.serializers.serialize('json', words)
+    # print words_json
+    return HttpResponse(json.dumps(a), content_type="application/json")
+    # return HttpResponse(words)
+    # words_json = django.core.serializers.serialize('json', words)
+    # a = [collections.OrderedDict({'id': 0, 'val': 0}), collections.OrderedDict({'id': 1, 'val': 1})]
+    # return django.core.serializers.serialize('json', a)
+    # for word in words:
+    #     tags = []
+    #     # print 'word: {}'.format(word)
+    #     for tag_word in TagWordRelationship.objects.filter(word=word):
+    #         # print '\ttag: {}'.format(tag_word.tag)
+    #         tags.append(tag_word.tag)
+    #     word.tags = tags
+    # return HttpResponse(words_json)
+
+def get_users(request):
+    users = User.objects.all()
+    response = {}
+    response = {'users': [user.username for user in users]}
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+def other_user_view(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except:
+        return HttpResponse("invalid username: {}".format(username));
+    # words = sorted(Word.objects.filter(author=user), key=lambda word: word.word)
+    # for word in words:
+    #     tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
+    #     word.tags = tags
+    #     context = {'words': words,
+    #                'user': user}
+    context = {}
+    return render(request, 'vocab/index.html', context)
+
 def toggle_favourite(request):
     user = request.user
     user = user if not user.is_anonymous() else None
@@ -26,12 +83,12 @@ def delete_tag(request):
     id = request.POST["id"] if "id" in request.POST else None
     word = Word.objects.get(id=id)
     tag = request.POST["tag"] if "tag" in request.POST else None
-    print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
+    # print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
     if word and tag:
         tag = Tag.objects.get(name=tag)
         try:
             tag_word = TagWordRelationship.objects.get(word=id, tag=tag.id)
-            print tag_word
+            # print tag_word
         except django.core.exceptions.ObjectDoesNotExist:
             return HttpResponse("Tag - Word not found");
         tag_word.delete();
@@ -44,7 +101,7 @@ def add_tag(request):
     id = request.POST["id"] if "id" in request.POST else None
     word = Word.objects.get(id=id)
     tag = request.POST["tag"] if "tag" in request.POST else None
-    print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
+    # print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
     if word and tag:
         try:
             tag = Tag.objects.get(name=tag)
@@ -74,11 +131,11 @@ def add_word(request):
 def delete_entry(request):
     user = request.user
     user = user if not user.is_anonymous() else None
-    print 'request.POST: {}'.format(request.POST)
-    print 'request.POST["id"]: {}'.format(request.POST['id'])
+    # print 'request.POST: {}'.format(request.POST)
+    # print 'request.POST["id"]: {}'.format(request.POST['id'])
     id = request.POST['id'] if 'id' in request.POST else None
     word = None
-    print 'id: {}'.format(id)
+    # print 'id: {}'.format(id)
     if user and id:
         try:
             entry = Word.objects.get(id=id)
@@ -92,7 +149,7 @@ def delete_entry(request):
 def edit_entry(request):
     user = request.user
     user = user if not user.is_anonymous() else None
-    print 'request.POST: {}'.format(request.POST)
+    # print 'request.POST: {}'.format(request.POST)
     id = request.POST['id'] if 'id' in request.POST else None
     word = request.POST['word'] if 'word' in request.POST else None
     description = request.POST['description'] if 'description' in request.POST else None
@@ -105,11 +162,12 @@ def edit_entry(request):
             entry.word = word
             entry.brief_description = description
             entry.save()
-            print 'changed'
+            # print 'changed'
     return HttpResponse('id: {}, word: {}, description: {}'.format(id, word, description));
 
 def index(request, user=None):
     user = request.user
+    return redirect('user/{}'.format(user))
     words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user), key=lambda word: word.word)
     for word in words:
         tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]

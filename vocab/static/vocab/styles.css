@@ -1,8 +1,58 @@
-.entry-container {
+.friend {
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 2px;
+    padding: 2px 2px 2px 2px;
+}
+
+#search {
+    width: 200px;
+}
+
+.side-section{
+    border: 2px solid black;
+    border-radius: 10px;
+    margin-top: 4px;
+    padding: 4px 4px 4px 4px;
+}
+
+aside hr {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+header {
+    width: 960px;
+    border: 1px solid black;
+    position: fixed;
+    height: 50px;
+    background-color: white;
+    z-index: 100;
+}
+
+section#main-section{
+    margin-top: 50px;
+    float: right;
+    width: 660px;
+    padding-top: 4px;
+}
+
+aside {
+    margin-top: 50px;
+    float: left;
+    width: 296px;
+    position: fixed;
+    /* border: 2px solid black; */
+    /* border-radius: 10px; */
 }
 
 body {
+    width: 960px;
     background-color: Black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
 }
 
 .entry[favourite="1"] .word {
@@ -26,11 +76,27 @@ body {
     margin-top: 0px;
     margin-right: 4px;
     font-size: 75%;
+    position: relative;
     /* min-width: 40px; */
+}
+
+.tag-label {
+    background-color: white;
 }
 
 .tags {
     padding-bottom: 4px;
+}
+
+.tags-separator {
+    margin-top: 2px;
+    margin-bottom: 4px;
+}
+
+.tag-delete-icon {
+    position: absolute;
+    top: -6px;
+    left: -6px;
 }
 
 .word:focus, .description:focus {
