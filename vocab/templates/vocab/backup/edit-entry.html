@@ -1,6 +1,0 @@
-<form action="{{ word.id }}" method="POST"> {% csrf_token %}
-  <input type="text" name="id" value="{{ word.id }}" style="display: none;">
-  <input type="text" name="word" value="{{ word.word }}">
-  <input type="text" name="description" value="{{ word.brief_description }}">
-  <input type="submit" value="Submit">
-</form>

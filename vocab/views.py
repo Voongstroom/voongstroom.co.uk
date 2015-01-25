@@ -9,6 +9,101 @@ from vocab.models import Word, Comment, Tag, TagWordRelationship
 from django.contrib.auth.models import User
 
 # Create your views here.
+
+def delete_tag(request):
+    user = request.user
+    id = request.POST["id"] if "id" in request.POST else None
+    try:
+        word = Word.objects.get(id=id, author=user)
+    except django.core.exceptions.ObjectDoesNotExist:
+        word = None
+    tag = request.POST["tag"] if "tag" in request.POST else None
+    if word and tag:
+        tag = Tag.objects.get(name=tag)
+        try:
+            tag_word = TagWordRelationship.objects.get(word=id, tag=tag.id)
+        except django.core.exceptions.ObjectDoesNotExist:
+            return HttpResponse("Tag - Word not found");
+        tag_word.delete();
+        return HttpResponse("Tag removed: {}".format(tag));
+    return HttpResponse('Failed to remove tag: {}'.format(tag))
+
+def add_tag(request):
+    user = request.user
+    id = request.POST["id"]
+    tag = request.POST["tag"]
+    try:
+        entry = Word.objects.get(id=id, author=user)
+    except django.core.exceptions.ObjectDoesNotExist:
+        entry = None
+    if entry and tag:
+        try:
+            tag = Tag.objects.get(name=tag)
+        except django.core.exceptions.ObjectDoesNotExist:
+            tag = Tag(name=tag)
+            tag.save()
+        tag_word = TagWordRelationship(word=entry, tag=tag)
+        tag_word.save()
+        return HttpResponse("Tag added: {}".format(tag));
+    return HttpResponse('Failed to add tag: {}'.format(tag));
+
+def edit_entry(request):
+    user = request.user
+    id = request.POST['id']
+    word = request.POST['word']
+    description = request.POST['description']
+    if user and id and word and description:
+        try:
+            entry = Word.objects.get(id=id, author=user)
+        except django.core.exceptions.ObjectDoesNotExist:
+            entry = None
+        if entry:
+            entry.word = word
+            entry.brief_description = description
+            entry.save()
+            return HttpResponse('Edited: id: {}, word: {}, description: {}'.format(id, word, description));
+    return HttpResponse('Failed to edit: id: {}, word: {}, description: {}'.format(id, word, description));
+
+def delete_entry(request):
+    user = request.user
+    entry_id = request.POST['id']
+    if user and entry_id:
+        try:
+            entry = Word.objects.get(id=entry_id, author=user)
+        except django.core.exceptions.ObjectDoesNotExist:
+            entry = None
+        if(entry):
+            word = entry.word
+            entry.delete()
+            return HttpResponse('Deleted entry: {}, word: {}'.format(entry_id, word))
+    return HttpResponse('Failed to delete entry: {}'.format(entry_id))
+
+def add_entry(request):
+    user = request.user
+    user = user
+    word = request.POST['word']
+    word = word
+    description = request.POST['description']
+    if user and word and description:
+        word = Word(word=word, brief_description=description, author=user)
+        word.save()
+        return django.http.HttpResponse(word.id)
+    return HttpResponse('word not added. word: {0}'.format(word) + ', description: {0}'.format(description))
+
+def toggle_favourite(request):
+    user = request.user
+    entry_id = request.POST["id"]
+    rating = request.POST["rating"]
+    try:
+        word = Word.objects.get(id=entry_id, author=user)
+    except django.core.exceptions.ObjectDoesNotExist:
+        word = None
+    if word:
+        word.popularity_rating = rating
+        word.save()
+        return HttpResponse("Rating updated: {}".format(rating))
+    return HttpResponse('You do not have permission to change this.')
+
 def get_entries(request, username):
     user = User.objects.get(username=username)
     words = Word.objects.filter(author=user).order_by("word")
@@ -28,172 +123,103 @@ def get_entries(request, username):
             "tags": word.tags,
         })
 
-    # print json.dumps(a)
-    # words_json = django.core.serializers.serialize('json', words)
-    # print words_json
     return HttpResponse(json.dumps(a), content_type="application/json")
-    # return HttpResponse(words)
-    # words_json = django.core.serializers.serialize('json', words)
-    # a = [collections.OrderedDict({'id': 0, 'val': 0}), collections.OrderedDict({'id': 1, 'val': 1})]
-    # return django.core.serializers.serialize('json', a)
-    # for word in words:
-    #     tags = []
-    #     # print 'word: {}'.format(word)
-    #     for tag_word in TagWordRelationship.objects.filter(word=word):
-    #         # print '\ttag: {}'.format(tag_word.tag)
-    #         tags.append(tag_word.tag)
-    #     word.tags = tags
-    # return HttpResponse(words_json)
 
-def get_users(request):
-    users = User.objects.all()
+def get_friends(request, username):
+    users = User.objects.exclude(username=username)
     response = {}
     response = {'users': [user.username for user in users]}
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-def other_user_view(request, username):
+def user_index(request, username):
     try:
         user = User.objects.get(username=username)
     except:
-        return HttpResponse("invalid username: {}".format(username));
-    # words = sorted(Word.objects.filter(author=user), key=lambda word: word.word)
-    # for word in words:
-    #     tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
-    #     word.tags = tags
-    #     context = {'words': words,
-    #                'user': user}
-    context = {}
-    return render(request, 'vocab/index.html', context)
+        return HttpResponse("User does not exist: {}".format(username))
+    return render(request, 'vocab/user_index.html')
 
-def toggle_favourite(request):
-    user = request.user
-    user = user if not user.is_anonymous() else None
-    id = request.POST["id"] if "id" in request.POST else None
-    rating = request.POST["rating"] if "rating" in request.POST else None
-    word = Word.objects.get(id=id)
-    if word:
-        word.popularity_rating = rating
-        word.save()
-        return HttpResponse("Rating updated: {}".format(rating))
-    return HttpResponse('Invalid input')
+def register(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    # email = request.POST['email']
+    email = None
+    user = User.objects.create_user(username, email, password)
+    user.save()
+    user = django.contrib.auth.authenticate(username=username, password=password)
+    django.contrib.auth.login(request, user)
+    return redirect('user/{}'.format(username))
 
-def delete_tag(request):
-    user = request.user
-    user = user if not user.is_anonymous() else None
-    id = request.POST["id"] if "id" in request.POST else None
-    word = Word.objects.get(id=id)
-    tag = request.POST["tag"] if "tag" in request.POST else None
-    # print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
-    if word and tag:
-        tag = Tag.objects.get(name=tag)
-        try:
-            tag_word = TagWordRelationship.objects.get(word=id, tag=tag.id)
-            # print tag_word
-        except django.core.exceptions.ObjectDoesNotExist:
-            return HttpResponse("Tag - Word not found");
-        tag_word.delete();
-        return HttpResponse("Tag removed");
-    return HttpResponse('Invalid input')
+def check_username_validity(request, username):
+    return HttpResponse(int(User.objects.filter(username=username).exists()))
 
-def add_tag(request):
-    user = request.user
-    user = user if not user.is_anonymous() else None
-    id = request.POST["id"] if "id" in request.POST else None
-    word = Word.objects.get(id=id)
-    tag = request.POST["tag"] if "tag" in request.POST else None
-    # print 'user: {}, id: {}, word: {}, tag: {}'.format(user, id, word, tag)
-    if word and tag:
-        try:
-            tag = Tag.objects.get(name=tag)
-        except django.core.exceptions.ObjectDoesNotExist:
-            tag = Tag(name=tag)
-            tag.save()
-        try:
-            tag_word = TagWordRelationship.objects.get(word=word.id, tag=tag.id)
-        except django.core.exceptions.ObjectDoesNotExist:
-            tag_word = TagWordRelationship(word=word, tag=tag)
-            tag_word.save()
-        return HttpResponse("All good");
-    return HttpResponse('Invalid input')
-
-def add_word(request):
-    user = request.user
-    user = user if request.user.is_anonymous() == False else None
-    word = request.POST['word'] if 'word' in request.POST else None
-    word = word if word != '' else None
-    description = request.POST['description'] if 'description' in request.POST else None
-    if user and word and description:
-        word = Word(word=word, brief_description=description, author=user)
-        word.save()
-        return django.http.HttpResponse(word.id)
-    return HttpResponse('word not added. word: {0}'.format(word) + ', description: {0}'.format(description))
-
-def delete_entry(request):
-    user = request.user
-    user = user if not user.is_anonymous() else None
-    # print 'request.POST: {}'.format(request.POST)
-    # print 'request.POST["id"]: {}'.format(request.POST['id'])
-    id = request.POST['id'] if 'id' in request.POST else None
-    word = None
-    # print 'id: {}'.format(id)
-    if user and id:
-        try:
-            entry = Word.objects.get(id=id)
-        except django.core.exceptions.ObjectDoesNotExist:
-            entry = None
-        if(entry):
-            word = entry.word
-            entry.delete()
-    return HttpResponse('Successfully deleted: id: {}, word: {}'.format(id, word))
-
-def edit_entry(request):
-    user = request.user
-    user = user if not user.is_anonymous() else None
-    # print 'request.POST: {}'.format(request.POST)
-    id = request.POST['id'] if 'id' in request.POST else None
-    word = request.POST['word'] if 'word' in request.POST else None
-    description = request.POST['description'] if 'description' in request.POST else None
-    if user and id and word and description:
-        try:
-            entry = Word.objects.get(id=id)
-        except django.core.exceptions.ObjectDoesNotExist:
-            entry = None
-        if entry:
-            entry.word = word
-            entry.brief_description = description
-            entry.save()
-            # print 'changed'
-    return HttpResponse('id: {}, word: {}, description: {}'.format(id, word, description));
-
-def index(request, user=None):
-    user = request.user
-    return redirect('user/{}'.format(user))
-    words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user), key=lambda word: word.word)
-    for word in words:
-        tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
-        word.tags = tags
-    context = {'words': words,
-               'user': user}
-    return render(request, 'vocab/index.html', context)
-
-def login(request):
+def sign_in(request):
     username = request.POST['username']
     password = request.POST['password']
     user = django.contrib.auth.authenticate(username=username, password=password)
     django.contrib.auth.login(request, user)
-    return redirect('/vocab')
+    return redirect('user/{}'.format(username))    
 
-def logout(request):
+def sign_out(request):
     django.contrib.auth.logout(request)
     return redirect('/vocab')
 
-def sign_up(request):
-    username = request.POST['new-username']
-    password = request.POST['new-password']
-    email = request.POST['email'] if 'email' in request.POST else None
-    user = User.objects.create_user(username, email, password)
-    user.save()
-    return redirect('/vocab')
+def index(request, user=None):
+    user = request.user
+    print 'user: {}'.format(user)
+    print 'type(user): {}'.format(type(user))
+    try:
+        user = User.objects.get(username=user)
+    except django.core.exceptions.ObjectDoesNotExist:
+        return render(request, 'vocab/index.html')
+    return redirect('user/{}'.format(user))
+
+    # return redirect('user/{}'.format(user))
+    # words = sorted(Word.objects.filter(author=None if user.is_anonymous() else user), key=lambda word: word.word)
+    # for word in words:
+    #     tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
+    #     word.tags = tags
+    # context = {'words': words,
+    #            'user': user}
+
+# def get_users(request):
+#     users = User.objects.all()
+#     response = {}
+#     response = {'users': [user.username for user in users]}
+#     return HttpResponse(json.dumps(response), content_type="application/json")
+
+# def other_user_view(request, username):
+#     try:
+#         user = User.objects.get(username=username)
+#     except:
+#         return HttpResponse("invalid username: {}".format(username));
+#     # words = sorted(Word.objects.filter(author=user), key=lambda word: word.word)
+#     # for word in words:
+#     #     tags = [rel.tag for rel in TagWordRelationship.objects.filter(word=word)]
+#     #     word.tags = tags
+#     #     context = {'words': words,
+#     #                'user': user}
+#     context = {}
+#     return render(request, 'vocab/index.html', context)
+
+
+# def login(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     user = django.contrib.auth.authenticate(username=username, password=password)
+#     django.contrib.auth.login(request, user)
+#     return redirect('/vocab')
+
+# def logout(request):
+#     django.contrib.auth.logout(request)
+#     return redirect('/vocab')
+
+# def sign_up(request):
+#     username = request.POST['new-username']
+#     password = request.POST['new-password']
+#     email = request.POST['email'] if 'email' in request.POST else None
+#     user = User.objects.create_user(username, email, password)
+#     user.save()
+#     return redirect('/vocab')
 
 # def index(request, user=None):
 #     user = request.user if not user else User.objects.get(username=user)
