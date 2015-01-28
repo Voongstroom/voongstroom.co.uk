@@ -2,8 +2,10 @@
 <html>
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/styles.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
   </head>
   
   <body>
@@ -19,42 +21,6 @@
 	  Home
 	</button>
       </a>
-      <!-- Login and Sign up -->
-      <!-- <div class="user-panel" style="margin-bottom: 20px;"> -->
-      <!-- 	{% if user and not user.is_anonymous %} -->
-      <!-- 	Logged in as {{ user }} -->
-      <!-- 	<a href="logout"> -->
-      <!-- 	  <button> -->
-      <!-- 	  Log Out -->
-      <!-- 	  </button> -->
-      <!-- 	</a> -->
-      <!-- 	{% else %} -->
-      <!-- 	<form action="sign-up" method="POST"> {% csrf_token %} -->
-      <!-- 	  <fieldset> -->
-      <!-- 	    <legend> -->
-      <!-- 	      New User: -->
-      <!-- 	    </legend> -->
-      <!-- 	    User Name: -->
-      <!-- 	    <input type="text" name="new-username"> -->
-      <!-- 	    Password: -->
-      <!-- 	    <input type="password" name="new-password"> -->
-      <!-- 	    <input type="submit" value="Submit"> -->
-      <!-- 	  </fieldset> -->
-      <!-- 	</form> -->
-      <!-- 	<form action="login" method="POST"> {% csrf_token %} -->
-      <!-- 	  <fieldset> -->
-      <!-- 	    <legend> -->
-      <!-- 	      Existing User: -->
-      <!-- 	  </legend> -->
-      <!-- 	    User Name: -->
-      <!-- 	    <input type="text" name="username"> -->
-      <!-- 	    Password: -->
-      <!-- 	    <input type="password" name="password"> -->
-      <!-- 	    <input type="submit" value="Log in"> -->
-      <!-- 	  </fieldset> -->
-      <!-- 	</form> -->
-      <!-- 	{% endif %} -->
-      <!-- </div> -->
     </header>
     
     <aside>
@@ -67,24 +33,19 @@
 	    <li> Vocab </li>
 	    <li> Python </li>
 	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
-	    <li> Mathematics </li>
 	  </ul>
 	</nav>
       </section> 
       <section class="side-section" id="search-and-filter">
-	Search and Filter
+	<span id="search-and-filter-label">Search and Filter</span>
 	<hr />
-	<div id="search" contenteditable="true">
-	  Search
-	</div>
-	Tags: <br />
-	Sort: 
+	<span class="input-label" id="search-label">Search</span>
+	<input id="search-input"></input>
+	<br />
+	<span class="input-label" id="tags-label">Tags</span>
+	<input id="tags-input"></input>
+	<br />
+	<span class="input-label" id="sort-label">Sort</span>
       </section>
       <section class="side-section" id="friends">
 	Friends
@@ -120,6 +81,7 @@
     
     {% load staticfiles %}
     <script src="{% static "vocab/user_index/user_index.js" %}"></script>
+    <script src="{% static "vocab/user_index/search_and_filter.js" %}"></script>
     
   </body>
 </html>

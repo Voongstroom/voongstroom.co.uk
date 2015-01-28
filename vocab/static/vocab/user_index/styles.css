@@ -1,3 +1,39 @@
+/* .tag { */
+/*     position: relative; */
+/* } */
+
+.ui-autocomplete-loading {
+    background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+
+.side-section#search-and-filter span.input-label {
+    width: 60px;
+    display: inline-block;
+}
+
+.side-section#search-and-filter input {
+    width: 205px;
+    display: inline-block;
+}
+
+.tag-suggestions-dropdown {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    background-color: white;
+    padding: 2px 2px 2px 2px;
+    margin: 0;
+}
+
+.tag-suggestions-dropdown li {
+    list-style-type: none;
+}
+
+button, .control-panel-icon, .tag-delete-icon{
+    cursor: pointer;
+    cursor: hand;
+}
+
 .friend {
     display: inline-block;
     border: 1px solid black;

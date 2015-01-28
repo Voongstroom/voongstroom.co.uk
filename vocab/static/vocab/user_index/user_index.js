@@ -1,3 +1,16 @@
+function checkIfUserIsAuthor() {
+    console.log("checkIfUserIsAuthor");
+    var response = $.ajax({
+	type: 'GET',
+	url: document.URL + '/check-if-user-is-author',
+	success: function(msg) {
+	    console.log(msg);
+	},
+	async: false,
+    }).responseText;
+    return response == "1";
+}
+
 function getFriendsList() {
     console.log("getFriendsList");
     console.log(document.URL + '/get-friends');
@@ -15,30 +28,29 @@ function getFriendsList() {
     return users;
 }
 
-function buildFriendsElement(username) {
+function buildFriendsElement(section) {
     console.log("buildFriendsElement");
     var friends = getFriendsList();
-    var friendsList = buildFriendsList(friends);
-    $(".side-section#friends").append(friendsList);
+    buildFriendsList(friends, section);
 }
 
-function buildFriendsList(friends) {
+function buildFriendsList(friends, section) {
     console.log("buildFriendsList");
-    console.log("friends: " + friends);
-    var friendsList = [];
     for(i=0; i<friends.length; i++) {
 	var username = friends[i];
 	var friendElement = document.createElement("a");
 	friendElement.className = "friend";
 	friendElement.innerHTML = username
 	friendElement.setAttribute("href", "http://www.voongstroom.co.uk/vocab/user/" + username);
-	friendsList[friendsList.length] = friendElement;
-	friendsList[friendsList.length] = document.createElement("br");
-	console.log("friend: " + friends[i]);
+	section.append(friendElement);
+
+	// friendsList[friendsList.length] = friendElement;
+	// friendsList[friendsList.length] = document.createElement("br");
+	// console.log("friend: " + friends[i]);
     }
-    return $(friendsList);
 }
 
+// Create the container for the tags and add the "Tag" label in there too
 function createTags(){
     var tags = document.createElement("div");
     tags.className = "tags";
@@ -80,7 +92,7 @@ function toggleFavourite(id, rating) {
     }).responseText;
 }
 
-
+// Delete tag-word relationship from DB
 function deleteTag(id, tag) {
     console.log("deleteTag");
     console.log("id: " + id);
@@ -111,6 +123,7 @@ function deleteTag(id, tag) {
     }).responseText;
 }
 
+// Add tag to DB
 function addTag(id, tag){
     console.log("addTag");
     console.log("id: " + id);
@@ -141,7 +154,7 @@ function addTag(id, tag){
     }).responseText;
 }
 
-
+// Edit entry in the DB
 function editEntry(id, word, description){
     console.log("editEntry");
     console.log("id: " + id);
@@ -174,7 +187,7 @@ function editEntry(id, word, description){
     }).responseText;
 }
 
-
+// Create new entry element
 function createNewEntry(){
     var newEntry = document.createElement("div");
     newEntry.className = "new-entry";
@@ -206,6 +219,8 @@ function createNewEntry(){
     // tagIcon.className = "control-panel-item tag-icon";
     // tagIcon.setAttribute("width", "40px");
     // tagIcon.setAttribute("src", "/static/vocab/tag_icon.png");
+    controlPanel.appendChild(saveIcon);
+    // controlPanel.appendChild(tagIcon);
     
     newEntry.appendChild(word);
     newEntry.appendChild(description);
@@ -213,28 +228,24 @@ function createNewEntry(){
     // newEntry.appendChild(tags);
     // tags.appendChild(tag);
     newEntry.appendChild(controlPanel);
-    controlPanel.appendChild(saveIcon);
-    // controlPanel.appendChild(tagIcon);
 
     return newEntry;
 }
 
-function buildEntries() {
+function buildEntries(section, tagText) {
     console.log("buildEntries");
-    var entries = getEntries();
+    var entries = getEntries(tagText);
     var elements = [];
     console.log(entries);
     console.log(entries.length);
     for(i=0; i<entries.length; i++) {
-	console.log(i);
      	var entry = entries[i];
 	var entryElement = buildEntryElement(entry);
-	elements[elements.length] = entryElement;
+	section.append(entryElement);
     }
-    $("#main-section").append($(elements));
 }
 
-function getEntries() {
+function getEntries(tagText) {
     console.log("getEntries");
     var response = $.ajax({
     	type: 'GET',
@@ -242,6 +253,9 @@ function getEntries() {
      	success: function(msg){
             console.log(msg);
      	},
+	data: {
+	    tag: tagText
+	},
     	async: false,
     }).responseText;
     entries = $.parseJSON(response);
@@ -250,8 +264,26 @@ function getEntries() {
     return entries;
 }
 
+// function getEntries2(filter) {
+//     var response = $.ajax({
+// 	type: "GET",
+// 	url: document.URL + '/get-entries2',
+// 	data: filter,
+// 	async: false
+//     }).responseText;
+//     var entryObjects = $.parseJSON(response.responseText);
+//     var entries = $(document.createElement("ul"));
+//     entries.attr("id", "entries");
+//     for(var i=0; i<entryObjects.length; i++) {
+// 	var entryObject = entryObjects[i];
+// 	var entry = buildEntryElement(entryObject);
+// 	entries.append(entry);
+//     }
+//     return entries;
+// }
+
 function buildEntryElement(entry) {
-    console.log("buildEntryElement");
+    console.log("buildEntryElement: " + entry.id);
     var entryElement = document.createElement("div");
     entryElement.className = "entry";
     entryElement.setAttribute("model-id", entry.id);
@@ -278,8 +310,7 @@ function buildEntryElement(entry) {
     tags_element.appendChild(tags_label);
 
     for(var i=0; i<tags.length; i++) {
-	// <!-- 	    <img class="tag-delete-icon" width="10px" src="/static/vocab/delete_icon.png" style="position: absolute; top: -6px; left: -6px; display: none;" /> -->
-    	var tag = document.createElement("div");
+    	var tag = document.createElement("button");
     	tag.className = "tag";
     	tag.innerHTML = tags[i];
 	tag.setAttribute("value", tag.innerHTML);
@@ -299,14 +330,80 @@ function buildEntryElement(entry) {
     return entryElement;
 }
 
+function buildControlPanelAuthor() {
+    var control_panel = document.createElement("div");
+    control_panel.setAttribute("class", "control-panel");
+    control_panel.style.display = "none";
+    
+    hr = document.createElement("hr");
+    control_panel.appendChild(hr);
+    
+    var edit_icon = document.createElement("img");
+    edit_icon.setAttribute("width", "35px");
+    edit_icon.setAttribute("src", "/static/vocab/edit_icon.png");
+    edit_icon.setAttribute("class", "control-panel-icon edit-icon");
+    control_panel.appendChild(edit_icon);
+    
+    var tag_icon = document.createElement("img");
+    tag_icon.setAttribute("width", "35px");
+    tag_icon.setAttribute("src", "/static/vocab/tag_icon.png");
+    tag_icon.setAttribute("class", "control-panel-icon tag-icon");
+    control_panel.appendChild(tag_icon);
+    
+    var favourite_icon = document.createElement("img");
+    favourite_icon.setAttribute("width", "35px");
+    favourite_icon.setAttribute("src", "/static/vocab/favourite_icon.png");
+    favourite_icon.className = "control-panel-icon favourite-icon";
+    control_panel.appendChild(favourite_icon);
+    
+    var delete_icon = document.createElement("img");
+    delete_icon.setAttribute("width", "35px");
+    delete_icon.setAttribute("src", "/static/vocab/delete_icon.png");
+    delete_icon.setAttribute("class", "control-panel-icon delete-icon");
+    control_panel.appendChild(delete_icon);
+    
+    return control_panel;
+}
+
+function buildControlPanelObserver() {
+    var control_panel = document.createElement("div");
+    control_panel.setAttribute("class", "control-panel");
+    control_panel.style.display = "none";
+    hr = document.createElement("hr");
+    control_panel.appendChild(hr);
+    var copy_icon = document.createElement("img");
+    copy_icon.setAttribute("width", "35px");
+    copy_icon.setAttribute("src", "/static/vocab/user_index/copy_icon.png");
+    copy_icon.setAttribute("class", "control-panel-icon copy-icon");
+    copy_icon.setAttribute("alt", "copy-icon");
+    control_panel.appendChild(copy_icon);
+    return control_panel;
+}
+
 $(document).ready(function(){
     // Document initialisation
     console.log("document ready");
     $("#main-section").prepend(createNewEntry());
     $(".new-entry").find(".word, .description").find(".input-text").prop("contenteditable", true);
     $(".new-entry").find(".word").find(".input-text").focus();
-    buildFriendsElement();
-    buildEntries();
+    buildFriendsElement($(".side-section#friends"));
+    buildEntries($("#main-section"));
+    var isAuthor = checkIfUserIsAuthor();
+    console.log("isAuthor: " + isAuthor);
+
+    // Assign Control Panel Builder
+    if(isAuthor) {
+	var buildControlPanel = buildControlPanelAuthor;
+    } else {
+	var buildControlPanel = buildControlPanelObserver;
+    }
+
+    // Disable new lines in input divs
+    $(document).on("keydown", ".description, .word, .tag", function(event) {
+	if(event.keyCode == 13) {
+	    event.preventDefault();
+	}
+    });
 
     // Toggle Favourite
     $(document).on("click", ".favourite-icon", function() {
@@ -321,7 +418,87 @@ $(document).ready(function(){
 	}
     });
 
-    // Add tags
+    // Tags
+
+    // Tag Suggestions
+    $(document).on("keyup", ".new-tag", function(e) {
+	console.log("keyup on .new-tag");
+	var newTag = $(this);
+	var userInput = newTag.contents().filter(function(){return this.nodeType == 3;}).text();
+	console.log("userInput: " + userInput);
+	var tagsList = newTag.parents(".tags");
+	var dropdown = newTag.find(".tag-suggestions-dropdown");
+	if(dropdown.size() == 0) {
+	    // buildDropdown(newTag);
+	    dropdown = $(document.createElement("ul"));
+	    dropdown.addClass("tag-suggestions-dropdown");
+	    newTag.append(dropdown);
+	}
+	$.get("/vocab/get-tags", {input: userInput}, function(data, status){
+	    var tags = data.tags;
+	    console.log("suggestedTags");
+	    console.log(tags);
+	    if(tags.length == 0) {
+		dropdown.slideUp();
+	    } else {
+		// remove mismatches
+		$(".tag-suggestions-dropdown li").each(function() {
+		    if(tags.indexOf($.trim($(this).text())) == -1) {
+			$(this).slideUp(function() {
+			    $(this).remove();
+			});
+		    }
+		});
+		// add tags not in the list already
+		for(var i=0; i<tags.length; i++) {
+		    // check whether tag is in the dropdown list
+		    var dropdownItems = $(".tag-suggestions-dropdown li");
+		    console.log("dropdownItems");
+		    console.log(dropdownItems);
+		    var matchedItems = dropdownItems.filter(function(){
+			return $(this).text() == tags[i];});
+		    console.log(matchedItems);
+		    if($(".tag-suggestions-dropdown li").filter(function(){return $(this).text() == tags[i];}).size() == 0){
+			var listElement = document.createElement("li");
+			listElement.className = "tag-suggestion";
+			listElement.innerHTML = tags[i];
+			dropdown.append(listElement);
+			$(listElement).hide();
+			$(listElement).slideDown();
+		    }
+		}
+		dropdown.slideDown();
+	    }
+	});
+    });
+
+    // Click Tag Suggestion to complete the tag input
+    $(document).on("click", ".tag-suggestion", function() {
+	var entry = $(this).parents(".entry");
+	var suggestion = $(this)
+	var newTag = entry.find(".new-tag");
+	var textComponent = newTag.contents().filter(function(){return this.nodeType == 3;});
+	
+
+	console.log(suggestion.text());
+	console.log(textComponent.text());
+	textComponent[0].textContent = suggestion.text();
+	console.log(textComponent.text());
+    });
+
+    // Filter entries
+    $(document).on("click", ".tag", function(e) {
+	if($(this).hasClass("tag-label") || $(this).hasClass("new-tag") || e.target.classList.contains("tag-delete-icon")){
+	    return;
+	} else {
+	    var tagText = $.trim($(this).text());
+	    console.log("tag clicked: " + tagText);
+	    $("#main-section").empty();
+	    buildEntries($("#main-section"), tagText);
+	}
+    });
+
+    // Tag edit mode
     $(document).on("click", ".entry .tag-icon", function() {
 	var tagIcon = $(this);
 	var entry = tagIcon.parents(".entry, .new-entry");
@@ -330,8 +507,13 @@ $(document).ready(function(){
 	entry.find(".tags-separator").slideDown();
 	$(tags).slideDown();
 	var newTag = document.createElement("div");
-	newTag.className = "tag";
+	newTag.className = "tag new-tag";
 	newTag.setAttribute("contenteditable", true);
+	var tagDeleteIcon = document.createElement("img");
+	tagDeleteIcon.className = "tag-delete-icon";
+	tagDeleteIcon.setAttribute("width", "10px");
+	tagDeleteIcon.setAttribute("src", "/static/vocab/delete_icon.png");
+	newTag.appendChild(tagDeleteIcon);
 	tags.append(newTag);
 	$(newTag).focus();
 	tagIcon.removeClass("tag-icon");
@@ -341,28 +523,31 @@ $(document).ready(function(){
 	entry.attr("edit-mode", true);
     });
 
+    // Tags - Save changes
     $(document).on("click", ".tag-save-icon", function() {
+	$(".tag-suggestions-dropdown").remove();
+
 	var tagIcon = $(this);
 	var entry = tagIcon.parents(".entry, .new-entry");
 	var tags = entry.find(".tags");
-	var newTag = tags.find(".tag:last-child");
+	var newTags = tags.find(".new-tag");
 	tagIcon.removeClass("tag-save-icon");
 	tagIcon.addClass("tag-icon");
 	tagIcon.attr("src", "/static/vocab/tag_icon.png");
-	$(newTag).prop("contentEditable", false);
-	console.log($(newTag));
-	if(newTag.text().length == 0){
-	    $(newTag).remove();
-	} else {
-	    addTag(entry.attr("model-id"), $(newTag).text());
-	    var tagDeleteIcon = document.createElement("img");
-	    tagDeleteIcon.className = "tag-delete-icon";
-	    tagDeleteIcon.setAttribute("width", "10px");
-	    tagDeleteIcon.setAttribute("src", "/static/vocab/delete_icon.png");
-	    $(tagDeleteIcon).hide();
-	    newTag.attr("value", newTag.text());
-	    newTag.append(tagDeleteIcon);
-	}
+	$(newTags).prop("contentEditable", false);
+	console.log("newTags:");
+	console.log(newTags);
+	$(newTags).each(function() {
+	    var tagText = $.trim($(this).text());
+	    if(tagText.length == 0) {
+		$(this).remove();
+	    } else {
+		addTag(entry.attr("model-id"), tagText);
+		$(this).attr("value", tagText);
+		$(this).removeClass("new-tag");
+	    }
+	});
+
 	var deletedTags = tags.find(".tag[deleted=true]");
 	console.log("deleted tags: " );
 	console.log(deletedTags);
@@ -371,14 +556,24 @@ $(document).ready(function(){
 	});
 	tags.find(".tag-delete-icon").hide();
 	entry.attr("edit-mode", false);
+
     });
 
+    // Tags - mark tags for deletion
     $(document).on("click", ".tag-delete-icon", function() {
+	console.log("delete tag clicked: ");
 	var tag = $(this).parents(".tag");
 	tag.hide();
-	tag.attr("deleted", true);
+	if(tag.hasClass("new-tag")) {
+	    // A new tag that was deleted before it was saved to the DB
+	    // don't need to flag for deletion from the DB
+	    $(tag).remove();
+	} else {
+	    tag.attr("deleted", true);
+	}
     });
 
+// Add additional tags
 //     $(document).on("click", ".add-tag-icon", function() {
 // 	var entry = $(this).parents(".entry");
 // 	var tags = $(this).parents(".tags");
@@ -398,7 +593,6 @@ $(document).ready(function(){
 // 	newTag.setAttribute("contenteditable", true);
 // 	tags.find(newTag).focus();
 //     });
-
 //     // Save tag or cancel
 //     $(document).on("blur", ".tag", function() {
 // 	var entry = $(this).parents(".entry");
@@ -506,7 +700,7 @@ $(document).ready(function(){
 	$(this).removeClass("save-icon");
 	$(this).addClass("edit-icon");
 	$(this).attr("src", "/static/vocab/edit_icon.png");
-	editEntry(entry.attr("model-id"), word.text(), description.text());
+	editEntry(entry.attr("model-id"), $.trim(word.text()), $.trim(description.text()));
     });
 
     // Modify Tags
@@ -543,55 +737,40 @@ $(document).ready(function(){
     });
 
     // Control Panel Management
+    var DELAY = 0, clicks = 0, timer = null;
     $(document).on("click", "div.entry", function(event){
 	console.log("clicked");
+	var entry = this;
+	clicks++;
 	
-	var control_panels = this.getElementsByClassName("control-panel");
-	var control_panel = (control_panels) ? control_panels[0] : null;
+	if(clicks === 1) {
+	    timer = setTimeout(function() {
+		var control_panels = entry.getElementsByClassName("control-panel");
+		var control_panel = (control_panels) ? control_panels[0] : null;
 	
-	if (control_panel == null) {
-	    var control_panel = document.createElement("div");
-	    control_panel.setAttribute("class", "control-panel");
-	    control_panel.style.display = "none";
-
-	    hr = document.createElement("hr");
-	    control_panel.appendChild(hr);
-	    
-	    var edit_icon = document.createElement("img");
-	    edit_icon.setAttribute("width", "35px");
-	    edit_icon.setAttribute("src", "/static/vocab/edit_icon.png");
-	    edit_icon.setAttribute("class", "control-panel-icon edit-icon");
-	    control_panel.appendChild(edit_icon);
-	    
-	    var tag_icon = document.createElement("img");
-	    tag_icon.setAttribute("width", "35px");
-	    tag_icon.setAttribute("src", "/static/vocab/tag_icon.png");
-	    tag_icon.setAttribute("class", "control-panel-icon tag-icon");
-	    control_panel.appendChild(tag_icon);
-
-	    var favourite_icon = document.createElement("img");
-	    favourite_icon.setAttribute("width", "35px");
-	    favourite_icon.setAttribute("src", "/static/vocab/favourite_icon.png");
-	    favourite_icon.className = "control-panel-icon favourite-icon";
-	    control_panel.appendChild(favourite_icon);
-	    
-	    var delete_icon = document.createElement("img");
-	    delete_icon.setAttribute("width", "35px");
-	    delete_icon.setAttribute("src", "/static/vocab/delete_icon.png");
-	    delete_icon.setAttribute("class", "control-panel-icon delete-icon");
-	    control_panel.appendChild(delete_icon);
-	    
-	    this.appendChild(control_panel);
+		if (control_panel == null) {
+		    var control_panel = buildControlPanel();
+		    entry.appendChild(control_panel);
+		}
+		
+		// Hide control panels that aren't in edit mode and do not belong to this entry
+		$(".entry").not($(".entry[edit-mode='true']")).not($(entry)).find(".control-panel").slideUp();
+		
+		// Toggle this control panel if it is not in edit mode and the user clicked off of the control-panel icons
+		if (!event.target.classList.contains("control-panel-icon") && !event.target.classList.contains("tag")){
+		    $(entry).not($("[edit-mode='true']")).find(".control-panel").slideToggle();
+		}
+		// alert("Single Click");
+		clicks = 0;
+	    }, DELAY);
+	} else {
+	    clearTimeout(timer);
+	    // alert("Double Click");
+	    clicks = 0;
 	}
-	
-	// Hide control panels that aren't in edit mode and do not belong to this entry
-	$(".entry").not($(".entry[edit-mode='true']")).not($(this)).find(".control-panel").slideUp();
-	
-	// Toggle this control panel if it is not in edit mode and the user clicked off of the control-panel icons
-	if (!event.target.classList.contains("control-panel-icon")){
-	    $(this).not($("[edit-mode='true']")).find(".control-panel").slideToggle();
-	}
-    })
+    }).on("dblclick", function(e) {
+	e.preventDefault();
+    });
 });
 
 // using jQuery

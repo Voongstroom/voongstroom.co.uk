@@ -10,6 +10,19 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
+def get_tags(request):
+    print 'get_tags'
+    user_input = request.GET['input']
+    if user_input:
+        response = {'tags': [tag.name for tag in Tag.objects.filter(name__istartswith=user_input)]}
+        response = HttpResponse(json.dumps(response), content_type="application/json")
+        print 'response: {}'.format(response)
+        return response
+    return HttpResponse(json.dumps({'tags': []}), content_type="application/json")
+
+def check_if_user_is_author(request, author):
+    return HttpResponse(str(int(str(request.user) == author)))
+
 def delete_tag(request):
     user = request.user
     id = request.POST["id"] if "id" in request.POST else None
@@ -106,22 +119,24 @@ def toggle_favourite(request):
 
 def get_entries(request, username):
     user = User.objects.get(username=username)
+    tag = request.GET['tag'] if 'tag' in request.GET else None
     words = Word.objects.filter(author=user).order_by("word")
     for word in words:
         tags = []
         for tag_word in TagWordRelationship.objects.filter(word=word):
             tags.append(tag_word.tag.name)
         word.tags = tags
-    
+
     a = []
     for word in words:
-        a.append({
-            "id": word.id,
-            "word": word.word,
-            "brief_description": word.brief_description,
-            "popularity_rating": word.popularity_rating,
-            "tags": word.tags,
-        })
+        if not tag or tag in word.tags:
+            a.append({
+                "id": word.id,
+                "word": word.word,
+                "brief_description": word.brief_description,
+                "popularity_rating": word.popularity_rating,
+                "tags": word.tags,
+            })
 
     return HttpResponse(json.dumps(a), content_type="application/json")
 
