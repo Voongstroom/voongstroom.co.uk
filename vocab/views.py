@@ -10,6 +10,20 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
+def get_comments(request):
+    entry_id = request.GET['id']
+    word = Word.objects.get(id=entry_id)
+    comments = Comment.objects.filter(word=word).order_by("entry_date")
+    response = []
+    for comment in comments:
+        comment_dict = {
+            author: comment.author,
+            content: comment.content,
+            entry_date: comment.entry_date,
+        }
+        response.append(comment_dict)
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
 def get_tags(request):
     user_input = request.GET['input']
     if user_input:
@@ -120,6 +134,10 @@ def get_entries(request, username):
             variable, filter_string = filter_.split('/')
             variable_filter_strings[variable] = filter_string
     query = Word.objects.filter(author=user).order_by("word")
+    for variable, filter_string in variable_filter_strings.iteritems():
+        if variable == 'tag':
+            for tag in filter_string.split("+"):
+                query = query.filter(tags__name=tag)
     return HttpResponse(convert_entries_to_json(query), content_type="application/json")
 
 def convert_entries_to_json(entries):
@@ -174,8 +192,6 @@ def sign_out(request):
 
 def index(request, user=None):
     user = request.user
-    print 'user: {}'.format(user)
-    print 'type(user): {}'.format(type(user))
     try:
         user = User.objects.get(username=user)
     except django.core.exceptions.ObjectDoesNotExist:

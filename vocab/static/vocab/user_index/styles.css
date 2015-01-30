@@ -210,7 +210,7 @@ div.new-entry {
     /*margin-bottom: 0px;*/
     /*border: 1px solid blue;*/
     /*padding-bottom: 0px;*/
-    font-size: 0px;
+    /* font-size: 0px; */
 }
 
 div.entry-end {
