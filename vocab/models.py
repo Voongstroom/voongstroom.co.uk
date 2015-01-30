@@ -8,7 +8,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-class Entry(models.Model):
+class Word(models.Model):
     word = models.CharField(max_length=200)
     entry_date = models.DateTimeField(default=datetime.now)
     brief_description = models.CharField(max_length=1000)
@@ -26,7 +26,7 @@ class Comment(models.Model):
     entry_date = models.DateTimeField(default=datetime.now)
     content = models.CharField(max_length=10000)
     author = models.ForeignKey(User)
-    entry = models.ForeignKey(Entry)
+    word = models.ForeignKey(Word)
 
 # class TagWordRelationship(models.Model):
 #     tag = models.ForeignKey(Tag)
