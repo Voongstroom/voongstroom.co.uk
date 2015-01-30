@@ -11,12 +11,10 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 def get_tags(request):
-    print 'get_tags'
     user_input = request.GET['input']
     if user_input:
         response = {'tags': [tag.name for tag in Tag.objects.filter(name__istartswith=user_input)]}
         response = HttpResponse(json.dumps(response), content_type="application/json")
-        print 'response: {}'.format(response)
         return response
     return HttpResponse(json.dumps({'tags': []}), content_type="application/json")
 
@@ -34,10 +32,11 @@ def delete_tag(request):
     if word and tag:
         tag = Tag.objects.get(name=tag)
         try:
-            tag_word = TagWordRelationship.objects.get(word=id, tag=tag.id)
+            tag_words = TagWordRelationship.objects.filter(word=id, tag=tag.id)
         except django.core.exceptions.ObjectDoesNotExist:
             return HttpResponse("Tag - Word not found");
-        tag_word.delete();
+        for tag_word in tag_words:
+            tag_word.delete();
         return HttpResponse("Tag removed: {}".format(tag));
     return HttpResponse('Failed to remove tag: {}'.format(tag))
 
@@ -119,26 +118,45 @@ def toggle_favourite(request):
 
 def get_entries(request, username):
     user = User.objects.get(username=username)
-    tag = request.GET['tag'] if 'tag' in request.GET else None
-    words = Word.objects.filter(author=user).order_by("word")
-    for word in words:
-        tags = []
-        for tag_word in TagWordRelationship.objects.filter(word=word):
-            tags.append(tag_word.tag.name)
-        word.tags = tags
+    filters = request.GET['filters']
+    variable_filter_strings = {}
+    if filters:
+        for filter_ in filters.split("#"):
+            variable, filter_string = filter_.split('/')
+            variable_filter_strings[variable] = filter_string
+    query = Word.objects.filter(author=user).order_by("word")
+    output_entries = []
+    for entry in query:
+        keep_entry = True
+        if 'tag' in variable_filter_strings:
+            entry_tags = get_tags_for_entry(entry)
+            tag_filters = variable_filter_strings['tag'].split('+')
+            for tag in tag_filters:
+                if tag not in entry_tags:
+                    keep_entry = False
+        if keep_entry:
+            output_entries.append(entry)
+    return HttpResponse(convert_entries_to_json(output_entries), content_type="application/json")
 
-    a = []
-    for word in words:
-        if not tag or tag in word.tags:
-            a.append({
-                "id": word.id,
-                "word": word.word,
-                "brief_description": word.brief_description,
-                "popularity_rating": word.popularity_rating,
-                "tags": word.tags,
-            })
+def get_tags_for_entry(entry):
+    tags = []
+    for tag_word in TagWordRelationship.objects.filter(word=entry):
+        tags.append(tag_word.tag.name)
+    return tags
 
-    return HttpResponse(json.dumps(a), content_type="application/json")
+def convert_entries_to_json(entries):
+    output = []
+    for entry in entries:
+        tags = get_tags_for_entry(entry)
+        output.append({
+            "id": entry.id,
+            "word": entry.word,
+            "description": entry.brief_description,
+            "popularity_rating": entry.popularity_rating,
+            "tags": tags,
+        })
+    return json.dumps(output)
+    # return HttpResponse(json.dumps(a), content_type="application/json")
 
 def get_friends(request, username):
     users = User.objects.exclude(username=username)

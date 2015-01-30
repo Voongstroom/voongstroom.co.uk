@@ -5,6 +5,7 @@
     <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/main_section/styles.css' %}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
   </head>
   
@@ -79,9 +80,10 @@
     <footer>
     </footer>
     
-    {% load staticfiles %}
+    <!-- {% load staticfiles %} -->
     <script src="{% static "vocab/user_index/user_index.js" %}"></script>
-    <script src="{% static "vocab/user_index/search_and_filter.js" %}"></script>
+    <script src="{% static "vocab/user_index/main_section/main_section.js" %}"></script>
+    <!-- <script src="{% static "vocab/user_index/search_and_filter.js" %}"></script> -->
     
   </body>
 </html>
