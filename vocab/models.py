@@ -3,6 +3,11 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 # Create your models here.
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
 class Entry(models.Model):
     word = models.CharField(max_length=200)
     entry_date = models.DateTimeField(default=datetime.now)
@@ -21,12 +26,7 @@ class Comment(models.Model):
     entry_date = models.DateTimeField(default=datetime.now)
     content = models.CharField(max_length=10000)
     author = models.ForeignKey(User)
-    word = models.ForeignKey(Word)
-
-class Tag(models.Model):
-    name = models.CharField(max_length=100)
-    def __str__(self):
-        return self.name
+    entry = models.ForeignKey(Entry)
 
 # class TagWordRelationship(models.Model):
 #     tag = models.ForeignKey(Tag)
