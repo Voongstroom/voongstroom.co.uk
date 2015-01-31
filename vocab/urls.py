@@ -20,7 +20,7 @@ urlpatterns = patterns('',
                        url(r'delete-tag', views.delete_tag, name='delete-tag'),
                        url(r'get-tags', views.get_tags, name='get-tags'),
                        url(r'get-comments', views.get_comments, name='get-comments'),
-
+                       url(r'submit-comment', views.submit_comment, name='submit-comment'),
                        # url(r'add-word', views.add_word, name='add-word'),
                        # url(r'login', views.login, name='login'),
                        # url(r'logout', views.logout, name='logout'),

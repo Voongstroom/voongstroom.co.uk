@@ -10,17 +10,32 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
+def build_comment_dict(comment):
+    comment_dict = {
+        'id': comment.id,
+        'author': comment.author.username,
+        'content': comment.content,
+    'entry_date': comment.entry_date.isoformat(),
+    }
+    return comment_dict;
+    
+def submit_comment(request):
+    entry_id = request.POST['id']
+    comment_content = request.POST['comment']
+    entry = Word.objects.get(id=entry_id)
+    user = User.objects.get(username=request.user)
+    comment = Comment(author=user, content=comment_content, word=entry)
+    comment.save()
+    response = build_comment_dict(comment)
+    return HttpResponse(json.dumps(response), content_type="application/json")
+    
 def get_comments(request):
     entry_id = request.GET['id']
     word = Word.objects.get(id=entry_id)
     comments = Comment.objects.filter(word=word).order_by("entry_date")
     response = []
     for comment in comments:
-        comment_dict = {
-            author: comment.author,
-            content: comment.content,
-            entry_date: comment.entry_date,
-        }
+        comment_dict = build_comment_dict(comment)
         response.append(comment_dict)
     return HttpResponse(json.dumps(response), content_type="application/json")
 
