@@ -6,6 +6,7 @@
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/styles.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/main_section/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vocab/user_index/side_section/search_and_filter.css' %}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
   </head>
   
@@ -24,7 +25,7 @@
       </a>
     </header>
     
-    <aside>
+    <aside id="main-side-section">
       <section class="side-section" id="notebooks">
 	<nav>
 	  Notebooks
@@ -37,17 +38,17 @@
 	  </ul>
 	</nav>
       </section> 
-      <section class="side-section" id="search-and-filter">
-	<span id="search-and-filter-label">Search and Filter</span>
-	<hr />
-	<span class="input-label" id="search-label">Search</span>
-	<input id="search-input"></input>
-	<br />
-	<span class="input-label" id="tags-label">Tags</span>
-	<input id="tags-input"></input>
-	<br />
-	<span class="input-label" id="sort-label">Sort</span>
-      </section>
+      <!-- <section class="side-section" id="search-and-filter"> -->
+      <!-- 	<span id="search-and-filter-label">Search and Filter</span> -->
+      <!-- 	<hr /> -->
+      <!-- 	<span class="input-label" id="search-label">Search</span> -->
+      <!-- 	<input id="search-input"></input> -->
+      <!-- 	<br /> -->
+      <!-- 	<span class="input-label" id="tags-label">Tags</span> -->
+      <!-- 	<input id="tags-input"></input> -->
+      <!-- 	<br /> -->
+      <!-- 	<span class="input-label" id="sort-label">Sort</span> -->
+      <!-- </section> -->
       <section class="side-section" id="friends">
 	Friends
 	<hr />
@@ -84,6 +85,8 @@
     <script src="{% static "vocab/user_index/user_index.js" %}"></script>
     <script src="{% static "vocab/user_index/main_section/main_section.js" %}"></script>
     <script src="{% static "vocab/user_index/main_section/comments.js" %}"></script>
+    <script src="{% static "vocab/user_index/side_section/side_section.js" %}"></script>
+    <script src="{% static "vocab/user_index/side_section/search_and_filter.js" %}"></script>
     <!-- <script src="{% static "vocab/user_index/search_and_filter.js" %}"></script> -->
     
   </body>
