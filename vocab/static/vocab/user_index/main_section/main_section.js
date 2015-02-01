@@ -502,7 +502,10 @@ $(document).ready(function(){
 	    var filters = {tag: [tag.val()]};
 	    entries.remove()
 	    var entries = getEntryElements({filters: filters});
+	    entries.prepend(buildNewEntryElement());
+	    entries.hide();
 	    mainSection.append(entries);
+	    entries.slideDown();
 	}
     });
     

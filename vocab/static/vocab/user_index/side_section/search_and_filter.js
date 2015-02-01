@@ -99,6 +99,7 @@ $(document).ready(function(){
 	var sortInput = sortForm.find("input");
 	var checkedInput = sortInput.filter(function(){return $(this).prop("checked") == true;});
 	var entryElements = getEntryElements({sortField: checkedInput.val()});
+	entryElements.prepend(buildNewEntryElement());	
 	entryElements.hide();
 	mainSection.empty();
 	mainSection.append(entryElements);
@@ -113,6 +114,7 @@ $(document).ready(function(){
 	    var sortInput = sortForm.find("input");
 	    var checkedInput = sortInput.filter(function(){return $(this).prop("checked") == true;});
 	    var entryElements = getEntryElements({searchTerms: searchInput.val().split(" "), sortField: checkedInput.val()});
+	    entryElements.prepend(buildNewEntryElement());	
 	    entryElements.hide();
 	    mainSection.empty();
 	    mainSection.append(entryElements);
@@ -160,7 +162,11 @@ $(document).ready(function(){
 		});
 		// populate the main section
 		mainSection.empty();
-		mainSection.append(getEntryElements(filters))
+		var entries = getEntryElements(filters);
+		entries.prepend(buildNewEntryElement());
+		entries.hide();
+		mainSection.append(entries);
+		entries.slideDown();
 		// finalise
     		input.val("");
 		return false;
@@ -181,7 +187,11 @@ $(document).ready(function(){
 	});
 	// populate the main section
 	mainSection.empty();
-	mainSection.append(getEntryElements(filters))
+	var entries = getEntryElements(filters);
+	entries.prepend(buildNewEntryElement());
+	entries.hide();
+	mainSection.append(entries);
+	entries.slideDown();
     });
 
     // Clicking on a tag puts it in the selected tags
