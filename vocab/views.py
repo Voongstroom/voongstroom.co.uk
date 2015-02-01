@@ -191,17 +191,26 @@ def toggle_favourite(request):
 
 def get_entries(request, username):
     user = User.objects.get(username=username)
-    filters = request.GET['filters']
+    filters = request.GET['filters'] if 'filters' in request.GET else None
+    sort_field = request.GET['sortField']
     variable_filter_strings = {}
     if filters:
         for filter_ in filters.split("#"):
             variable, filter_string = filter_.split('/')
             variable_filter_strings[variable] = filter_string
-    query = Word.objects.filter(author=user).order_by("word")
+    search_terms = request.GET['searchTerms'].split('+') if 'searchTerms' in request.GET else None
+    query = Word.objects.filter(author=user)
     for variable, filter_string in variable_filter_strings.iteritems():
         if variable == 'tag':
             for tag in filter_string.split("+"):
                 query = query.filter(tags__name=tag)
+    if search_terms:
+        for search_term in search_terms:
+            query = query.filter(brief_description__icontains=search_term)
+    if sort_field == 'date':
+        query = query.order_by("-entry_date")
+    else:
+        query = query.order_by("word")
     return HttpResponse(convert_entries_to_json(query), content_type="application/json")
 
 def convert_entries_to_json(entries):
