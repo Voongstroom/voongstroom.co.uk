@@ -20,6 +20,8 @@ import vocab
 urlpatterns = patterns('',
                        url(r'^vocab/', include('vocab.urls')),
                        url(r'^$', myproject.views.index),
+                       url(r'^admin/', include(admin.site.urls)),
+                       # url(r'^accounts/', include('allauth.urls')),
                        # url(r'^$', include('vocab.urls')),
                        # url(r'^admin/', include(admin.site.urls)),
                        # url(r'form-test', include('vocab.urls')),

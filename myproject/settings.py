@@ -26,6 +26,31 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# # django-allauth stuff
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     # Required by allauth template tags
+#     "django.core.context_processors.request",
+#     # allauth specific context processors
+#     "allauth.account.context_processors.account",
+#     "allauth.socialaccount.context_processors.socialaccount",
+#     "django.contrib.auth.context_processors.auth",
+# )
+# AUTHENTICATION_BACKENDS = (
+#     # Needed to login by username in Django admin, regards of `allauth`
+#     "django.contrib.auth.backends.ModelBackend",
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# )
+
+# # auth and allauth settings
+# LOGIN_REDIRECT_URL = '/vocab'
+# SOCIALACCOUNT_QUERY_EMAIL = True
+# SOCIALACCOUNT_PROVIDERS = {
+#     'facebook': {
+#         'SCOPE': ['email', 'publish_stream'],
+#         'METHOD': 'js_sdk' # instead of oauth2
+#     }
+# }
 
 # Application definition
 
@@ -39,7 +64,15 @@ INSTALLED_APPS = (
     'vocab',
     'myproject',
     'friendship',
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
 )
+# more django-allauth
+# SITE_ID = 4
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

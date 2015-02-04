@@ -253,9 +253,12 @@ def check_username_validity(request, username):
     return HttpResponse(int(User.objects.filter(username=username).exists()))
 
 def sign_in(request):
+    print 'sign_in'
     username = request.POST['username']
     password = request.POST['password']
     user = django.contrib.auth.authenticate(username=username, password=password)
+    if user == None:
+        return HttpResponse("User could not be authenticated")
     django.contrib.auth.login(request, user)
     return redirect('user/{}'.format(username))    
 
