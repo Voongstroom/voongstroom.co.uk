@@ -24,6 +24,7 @@ function getEntryElements(args) {
     args = args === undefined ? {} : args;
     entryElements = $(document.createElement("ul"));
     entryElements.attr("id", "entries");
+    entryElements.attr("notebook", args.notebook === undefined ? "" : args.notebook);
     var entries = getEntries(args);
     for(var i=0; i<entries.length; i++) {
 	var entry = entries[i];
@@ -43,9 +44,14 @@ function getEntries(args) {
     var filters = args.filters === undefined ? [] : args.filters;
     var searchTerms = args.searchTerms === undefined ? [] : args.searchTerms;
     var sortField = args.sortField === undefined ? "alpha" : args.sortField;
+    var notebook = args.notebook === undefined ? "" : args.notebook;
     var requestData = {};
     // tags
+    // console.log(filters != undefined);
+    // console.log(filters.tag != undefined);
+    // console.log(filters.tag.length >= 1);
     if(filters != undefined  && filters.tag != undefined && filters.tag.length >= 1) {
+	console.log("tags");
 	var filtersString = "tag/"
 	for(var i=0; i<filters.tag.length; i++){
 	    if(i > 0){
@@ -68,6 +74,11 @@ function getEntries(args) {
     }
     // sort
     requestData.sortField = sortField;
+    // notebook
+    requestData.notebook = args.notebook;
+    console.log("json request data");
+    console.log(requestData);
+    // ajax
     var response = $.ajax({
 	type: 'GET',
 	url: document.URL + '/get-entries',
@@ -244,11 +255,14 @@ $(document).ready(function(){
     // Initialisation
     console.log("main_section.js: document ready");
     var mainSection = $("section#main-section");
-    mainSection.append(getEntryElements());
-    var entries = mainSection.find("#entries");
-    entries.prepend(buildNewEntryElement());
     var userIsAuthor = checkIfUserIsAuthor();
     var buildControlPanel = ControlPanelBuilder(userIsAuthor);
+    var newEntry = buildNewEntryElement();
+    var entries = getEntryElements();
+    if(userIsAuthor){
+	mainSection.append(newEntry);
+    }
+    mainSection.append(entries);
     
     // Show control panel
     $(document).on("click", ".entry", function(e) {
@@ -311,24 +325,18 @@ $(document).ready(function(){
     // Save edits
     $(document).on("click", ".entry .save-icon", function(){
 	console.log("click .entry .save-icon");
+	var entries = mainSection.find("#entries");
 	var entry = $(this).parents(".entry");
 	var word = entry.find(".word");
 	var description = entry.find(".description");
+	console.log("debug");
+	console.log(word);
+	console.log(description);
+	
 	if (entry.hasClass("new-entry")) {
 	    if(word.val() != "" && description.val() != "") {
 		console.log("save new-entry");
-		entry.removeClass("new-entry");
-		var controlPanel = entry.find(".control-panel");
-		controlPanel.slideUp();
-		var controlPanelSeparator = entry.find(".control-panel-separator");
-		controlPanelSeparator.slideUp(function() {
-	    	controlPanel.find(".control-panel-icon").show();
-		});
-		$(this).removeClass("save-icon");
-		$(this).addClass("edit-icon");
-		$(this).attr("src", "/static/vocab/edit_icon.png");
-		entry.attr("edit-mode", false);
-		entry.find("input").attr("disabled", true);
+		var notebook = entries.attr("notebook");
 		csrfSetup();
 		var response = $.ajax({
 		    type: 'POST',
@@ -336,20 +344,22 @@ $(document).ready(function(){
 		    data: {
 			word: word.val(),
 			description: description.val(),
+			notebook: notebook,
 		    },
-     		    success: function(msg){
-			console.log("successfully added entry");
-			console.log(msg);
-			entry.attr("id", msg);
+		    success: function(msg){
+			var entry = msg;
+			console.log("entry");
+			console.log(entry);
+			var entryElement = buildEntryElement(entry);
+			entryElement.hide();
+			entries.prepend(entryElement);
+			entryElement.slideDown();
 		    },
-		    async: true,
+		    async: true
 		});
+		entry.find("input").val("");
 	    }
-	    var entries = entry.parents("#entries");
-	    var newEntryElement = buildNewEntryElement();
-	    newEntryElement.hide();
-	    entries.prepend(newEntryElement);
-	    newEntryElement.slideDown();
+
 	} else {
 	    word.prop("disabled", true);
 	    description.prop("disabled", true);
@@ -498,14 +508,15 @@ $(document).ready(function(){
 	var tag = $(this);
 	if(!tag.hasClass(".new-tag")){
 	    var mainSection = $("#main-section");
-	    var entries = mainSection.find("#entries");
+	    var oldEntries = mainSection.find("#entries");
 	    var filters = {tag: [tag.val()]};
-	    entries.remove()
-	    var entries = getEntryElements({filters: filters});
-	    entries.prepend(buildNewEntryElement());
-	    entries.hide();
-	    mainSection.append(entries);
-	    entries.slideDown();
+	    oldEntries.slideUp(function(){
+		$(this).remove();
+		var entries = getEntryElements({filters: filters});
+		entries.hide();
+		mainSection.append(entries);
+		entries.slideDown();
+	    });
 	}
     });
     

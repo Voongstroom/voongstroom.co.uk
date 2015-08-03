@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <!-- Meta -->
+    <title>Fitness</title>
+    <meta charset="utf-8" />
+    <meta author="David Voong" />
+    
+    <!-- JQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- Styles -->
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'dino-fitness/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'dino-fitness/fitness.css' %}" />
+    <!-- Scripts -->
+    <script src="{% static 'dino-fitness/javascript.js' %}"></script>
+    <script src="{% static 'dino-fitness/fitness.js' %}"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid" id="main">
+      <h1>Fitness</h1>
+      <p>Description</p>
+      <section id="getting-started">
+	<h2>Getting Started</h2>
+      </section>
+      <section id="articles">
+	<h2>Articles</h2>
+      </section>
+      <section id="tools">
+	<h2>Tools</h2>
+	<section id="bmi">
+	  <h3>BMI Calculator</h3>
+	</section>
+	<section id="body-fat-percentage">
+	  <h3>Body Fat Percentage Calculator</h3>
+	</section>
+	<section id="exercise-database">
+	  <h3>Exercise Database</h3>
+	</section>
+      </section>
+    </div>
+  </body>
+
+</html>

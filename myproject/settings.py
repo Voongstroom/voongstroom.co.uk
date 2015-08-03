@@ -52,6 +52,13 @@ ALLOWED_HOSTS = []
 #     }
 # }
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.request',
+    'zinnia.context_processors.version',  # Optional
+)
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -62,17 +69,25 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vocab',
+    'dino_fitness',
     'myproject',
-    'friendship',
+    # 'friendship',
     # 'django.contrib.sites',
     # 'allauth',
     # 'allauth.account',
     # 'allauth.socialaccount',
     # 'allauth.socialaccount.providers.facebook',
     # 'allauth.socialaccount.providers.google',
+    # apps for zinnia
+    'django.contrib.sites',
+    'django_comments',
+    'mptt',
+    'tagging',
+    'zinnia',
 )
+
 # more django-allauth
-# SITE_ID = 4
+SITE_ID = 5
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

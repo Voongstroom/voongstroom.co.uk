@@ -8,6 +8,14 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+class Notebook(models.Model):
+    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(User)
+
+class Subscription(models.Model):
+    owner = models.ForeignKey(User)
+    notebook = models.ForeignKey(Notebook)
+
 class Word(models.Model):
     word = models.CharField(max_length=200)
     entry_date = models.DateTimeField(default=datetime.now)
@@ -17,6 +25,7 @@ class Word(models.Model):
     skill_rating = models.IntegerField(default=0)
     author = models.ForeignKey(User)
     tags = models.ManyToManyField(Tag)
+    notebook = models.ForeignKey(Notebook, null=True, default=None)
     def __str__(self):
         return self.word
     def __lt__(self, other):

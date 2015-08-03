@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en-GB"> <!-- First two characters are the language, if there are more than two then the rest describe the dialect -->
+    <title>Dino Fitness Rawrr</title>
+
+    <!-- JQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- AngularJS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+
+    <!-- MathJax -->
+    <!--<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>-->
+
+    <meta charset="utf-8" />
+    <meta name="keywords" content="dinosaur dino fitness exercise health sport" />
+    <meta name="description" content="" />
+    <meta author="David Voong" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'dino-fitness/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'dino-fitness/index.css' %}" />
+    <script src="{% static 'dino-fitness/javascript.js' %}"></script>
+    <script src="{% static 'dino-fitness/index.js' %}"></script>
+  </head>
+
+  <body>
+    
+    <!-- JUMBOTRON -->
+    <!-- </header> -->
+    <section class="jumbotron" id="jumbotron">
+      <h1>Welcome to Dino Fitness</h1>
+      <p>Dinosaurs are (were) fit, fact! Be like the dinosaur and live a happy and healthy life.</p>
+    </section>
+    
+    <!-- Overview -->
+    <section id="overview" class="container-fluid">
+      <div class="row">
+	<div id="nutrition" class="col col-sm-4">
+	  <h2>Nutrition</h2>
+	  <img class="overview-image" src="{% static 'dino-fitness/fresh_food.jpg' %}" width="100%"></img>
+	  <p>Food is good, reaaaal good. Love, appreciate and educate yourself in it and you'll have yourself all the ingredients needed for a delicious relationship.</p>
+	</div>
+	<div id="fitness" class="col col-sm-4">
+	  <h2>Fitness</h2>
+	  <img class="overview-image img-responsive" src="{% static 'dino-fitness/fitness.png' %}"></img>
+	  <p>If you're just looking working on general fitness or how to not look like a newbie in the gym, this is for you.</p>
+	</div>
+	<div id="sport" class="col col-sm-4">
+	  <h2>Sport</h2>
+	  <img class="overview-image img-responsive" src="{% static 'dino-fitness/sport.png' %}"></img>
+	  <p>Marathons, triathlons or slam dunking backflips, if you want to reach the peak of your potential look here. Cue eighties montage theme.</p>
+	</div>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <section id="disclaimer" class="container-fluid">
+      <h2>Disclaimer</h2>
+      <p>There is <b>a lot</b> of health and fitness information out there, sometimes it can be contradictory, leading to confusion and feeling overwhelmed. Who should you listen to? I've broken down the main sources of information into four groups, these are,</p>
+      <h3>Government Based Health Care</h3>
+      <h4>Who</h4>
+      <ul>
+	<li>Doctors</li>
+	<li>Healthcare Nutritionists</li>
+	<li>Bureaucrats</li>
+	<li>Personal Trainers</li>
+      </ul>
+      <h4>Advantages</h4>
+      <p>I want to say this information is normally fairly safe though the spiralling obesity rates gives me reservations. There is obviously something wrong with current policies but there are many that spot on, e.g. having lots of fruit and veg.</p>
+      <h4>Disadvantages</h4>
+	<ul>
+	  <li>Susceptible to inertia meaning new developments in science take a long time to be passed onto the general public.</li>
+	  <li>Industrial Pressure: Government policies are subject to economic and industrial pressures, which may not be aligned with your personal interests e.g. it is in the interest of soft drink companies that the goverment supports the studies on the impact of soft drinks on obesity, these companies have a lot of influence on goverment policies through lobbyists.</li>
+	</ul>
+      <h3>Athletic community</h3>
+      <h4>Who</h4>
+      <ul>
+	<li>Physios</li>
+	<li>Sports coaches</li>
+	<li>Professional and amateur athletes</li>
+	<li>Gym rats</li>
+      </ul>
+      <h4>Advantages</h4>
+      <ul>
+	<li>Empirical Evidence: Athletes tend to live longer and have a higher quality of life (cite this). Tried and tested and performance based.</li>
+	<li>Low bias, most people are genuinely trying to help and no vested interest.</li>
+      </ul>
+      <h4>Disadvantages</h4>
+      <ul>
+	<li>Pseudo or bro science. (Mostly attributable to gym rats)</li>
+	<li>Most people are not aiming to be professional athletes so this information is not necessarily tailored to them.</li>
+	<li>Performance enhancement may not necessarily translate to a healthy lifestyle, e.g. performance enhancement drugs (PEDs) such as steroids and to a lesser extent synthetic proteins and supplements.</li>
+      </ul>
+      <h3>Academic community</h3>
+      <h4>Who</h4>
+      <ul>
+	<li>Scientific journals</li>
+	<li>Academic lectures</li>
+	<li>Journalists</li>
+      </ul>
+      <h4>Advantages</h4>
+      <ul>
+	<li>Scientific method</li>
+	<li>Low bias</li>
+      </ul>
+      <h4>Disadvantages</h4>
+      <ul>
+	<li>Difficult to understand, not approachable.</li>
+	<li>Difficulties associated with clinical studes.</li>
+	<li>Conflicted studies.</li>
+	<li>Industry funded studies may increase bias.</li>
+      </ul>
+      <h3>Well being "experts"</h3>
+      <h4>Who</h4>
+      <ul>
+	<li>Vegans</li>
+	<li>Yoga instructors</li>
+	<li>Raw veg enthusiasts</li>
+	<li>Hipsters</li>
+      </ul>
+      <p>As a proud canivore this is really not my area of expertise other than yoga which has evidence of many health benefits. If you're interested in this sort of thing I suggests looking for other sources.</p>
+      <h2>Summary</h2>
+      <p>So who should you listen to? There are many factors but as a general rule I would order them by as the following,
+	<ul>
+	  <li>Academic Community</li>
+	  <li>Athletic Community</li>
+	  <li>Government Health</li>
+	</ul>
+      </p>
+      <p>Ultimately it's up to you what you want to believe. Hypotheses in Biological sciences are notorious for being difficult to confirm, for example, keeping children bed ridden and feeding them lard sticks is not exactly an ethical experiment to test the effects of lack of exercise and lard filled diets on children!</p>
+      <p>But that's not to say that we can't be sure of anything! What <b>is</b> evidently obvious is the fact that a healthy diet high in fruits, vegetables and unprocessed foods as well as regular exercise contribute to a better quality of life and a longer one too.</p>
+      <p>With that in mind, throughout this site I will endeavor to support my opinions with either,</p>
+      <ul>
+	<li>references to clinical studies</li>
+	<li>reference to sources of community opinion</li>
+	<li>explain the basis for my opinion</li>
+      </ul>
+      <p>As a general piece of advice on all information from the internet is to keep a healthy level of cynicism, there are no shortcuts or quick fixes and if something sounds too good to be true it almost definitely is. Also remember each person is unique, what works for one person may not work for you, find what works for you.</p>
+    </section>
+    
+    <!-- About Me -->
+    <section id="about-me" class="container-fluid">
+      <h2>About Me</h2>
+      <p>Hi my name is David and I put together this website in order to share some of my experiences and knowledge I've gained in the course of getting fit and healthy. It's almost been two years since I made the decision to be a healthier person, I started off at a weight of 102kg (16 stones and 9 lbs) and a body mass index (BMI) of over 33 (a BMI greater than 31 is clinically obese) and ending up with a weight of 76 kg (just under 12 stones) and a BMI of under 25. The weight loss is just the tip of the iceberg, the change in lifestyle has improved nearly all aspects of life, I sleep better, have improved mood, cognitive ability and most importantly am happier and healthier.</p>
+      <!-- <h3>Health</h3> -->
+      <!-- <p> -->
+      <!-- 	<\!-- Asthma -\-> -->
+      <!-- 	<\!-- Ex Smoker -\-> -->
+      <!-- 	<\!-- Insominia -\-> -->
+      <!-- 	<\!-- Anxiety -\-> -->
+      <!-- 	<\!-- Panic Attacks -\-> -->
+      <!-- 	<\!-- Overweight -\-> -->
+      <!-- 	<\!-- Height, weight and build -\-> -->
+      <!-- </p> -->
+      <!-- <h3>Work</h3> -->
+      <!-- <p> -->
+      <!-- 	Particle Physics PhD -->
+      <!-- 	Science Education -->
+      <!-- </p> -->
+      <h3>Sport</h3>
+      <!-- My fitness is primarliy focused on functional training, which means I train in order to be faster, stronger, more durable and in general better at performing as some task,  opposed to a more aesthetic focused approach.  -->
+      <h4>Martial Arts</h4>
+      <p>I practise a mix of martial arts mainly Judo, boxing and Brazilian Jiu Jitsu (BJJ) with competitive experience in Judo.</p>
+      <h4>Edurance Racing</h4>
+      <p>I've run a few races ranging from 5 km to half marathons (~21.1 km or 13.1 miles) as well as obstacle races such as Tough Mudder and I'm currently training for an olympic distance triathlon and plan to build on this with marathons, half ironmans and eventually a full ironman.</p>
+      <!-- <p> -->
+	<!-- Personal traning -->
+	<!-- Edurance training -->
+	<!-- Judo -->
+	<!-- Boxing  -->
+	<!-- Brazilian Jiu Jitsu -->
+	<!-- Squash -->
+      <!-- </p> -->
+    </section>
+    <!-- Articles -->
+    <!-- 
+	 Oranges
+	 Eggs
+	 Fat
+	 Cholesterol
+	 Cheat Days
+	 Protein
+	 Sugar
+
+	 Running
+	 Walking
+	 Swimming
+	 Cycling
+	 BMI - typical BMI for different sports or sports position
+	 Body Fat
+	 Muscle Types
+	 Hypertrophy
+	 Motivation and temptation
+	 Slam dunks
+	 Agility
+	 Push ups
+	 Pull ups
+	 Core muscles
+	 Sprints
+	 Rest
+	 Sleep
+	 
+	 Flexibility	
+	 Yoga
+	 Skipping / Jump Rope
+	 Triathlon Training Blog
+	 Dieting,  Making Weight and calorie counting
+	 Injuries
+	 
+      -->
+
+    <div class="container-fluid">
+      <div style="clear: both">
+      </div>
+      <footer>
+      </footer>
+    </div> <!-- boostrap container -->
+  </body>
+</html>

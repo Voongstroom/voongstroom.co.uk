@@ -96,12 +96,12 @@ $(document).ready(function(){
 
     // Sort entries
     sortForm.find("input").change(function(){
+	var oldEntries = mainSection.find("#entries");
 	var sortInput = sortForm.find("input");
 	var checkedInput = sortInput.filter(function(){return $(this).prop("checked") == true;});
 	var entryElements = getEntryElements({sortField: checkedInput.val()});
-	entryElements.prepend(buildNewEntryElement());	
+	oldEntries.slideUp(function(){$(this).remove();});
 	entryElements.hide();
-	mainSection.empty();
 	mainSection.append(entryElements);
 	entryElements.slideDown();
     });
@@ -111,12 +111,12 @@ $(document).ready(function(){
 	console.log("submit search");
 	var searchInput = $(this);
 	if(e.keyCode == 13 && searchInput.val() != ""){
+	    var oldEntries = mainSection.find("#entries");
 	    var sortInput = sortForm.find("input");
 	    var checkedInput = sortInput.filter(function(){return $(this).prop("checked") == true;});
 	    var entryElements = getEntryElements({searchTerms: searchInput.val().split(" "), sortField: checkedInput.val()});
-	    entryElements.prepend(buildNewEntryElement());	
+	    oldEntries.slideUp(function(){$(this).remove();});
 	    entryElements.hide();
-	    mainSection.empty();
 	    mainSection.append(entryElements);
 	    entryElements.slideDown();
 	}
@@ -161,9 +161,9 @@ $(document).ready(function(){
 		    filters.tag[filters.tag.length] = $(this).val();
 		});
 		// populate the main section
-		mainSection.empty();
-		var entries = getEntryElements(filters);
-		entries.prepend(buildNewEntryElement());
+		var oldEntries = mainSection.find("#entries");
+		var entries = getEntryElements({filters: filters});
+		oldEntries.slideUp(function(){$(this).remove();});
 		entries.hide();
 		mainSection.append(entries);
 		entries.slideDown();
@@ -186,9 +186,9 @@ $(document).ready(function(){
 	    filters.tag[filters.tag.length] = $(this).val();
 	});
 	// populate the main section
-	mainSection.empty();
-	var entries = getEntryElements(filters);
-	entries.prepend(buildNewEntryElement());
+	var oldEntries = mainSection.find("#entries");
+	var entries = getEntryElements({filters: filters});
+	oldEntries.slideUp(function(){$(this).remove();});
 	entries.hide();
 	mainSection.append(entries);
 	entries.slideDown();

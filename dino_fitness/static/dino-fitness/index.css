@@ -1,0 +1,92 @@
+#jumbotron{
+    margin-top: 50px;
+    margin-bottom: 0px;
+}
+
+section{
+    margin: 0px;
+} 
+
+#overview{
+}
+
+#overview .col{
+    border: 1px solid transparent;
+}
+
+#overview .col img{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#overview #nutrition{
+    /* background-color: orange; */
+}
+
+#overview #fitness{
+    /* background-color: yellow; */
+}
+
+#overview #sport{
+    /* background-color: green; */
+}
+
+#disclaimer{
+    background-color: #99CCFF;
+    /* background-color: blue; */
+}
+
+#about-me{
+}
+
+/* section{ */
+/* /\*     margin-top: 0px; *\/ */
+/* /\*     margin-bottom: 0px; *\/ */
+/* /\*     overflow: auto; *\/ */
+/*     margin: 0px; */
+/* }  */
+
+/* /\* .col-centered{ *\/ */
+/* /\*     float: none; *\/ */
+/* /\*     margin: 0 auto; *\/ */
+/* /\* } *\/ */
+
+/* img.overview-image{ */
+/*     /\* background-color: grey; *\/ */
+/*     /\* max-width: 200px; *\/ */
+/*     /\* margin-left: 100px; *\/ */
+/*     /\* margin-right: auto; *\/ */
+/* } */
+
+/* #jumbotron{ */
+/*     margin-top: 50px; */
+/*     margin-bottom: 0px; */
+/* } */
+
+/* #overview{ */
+/*     /\* background-color: red; *\/ */
+/* } */
+
+/* #disclaimer{ */
+/*     background-color: #99CCFF; */
+/* } */
+
+/* #about-me{ */
+/* } */
+
+/* #nutrition{ */
+/*     background-color: orange; */
+/* } */
+
+/* #fitness{ */
+/*     background-color: white; */
+/* } */
+
+/* #sport{ */
+/*     background-color: green; */
+/* } */
+
+/* /\* section#overview h2{ *\/ */
+/* /\*     text-align: center; *\/ */
+/* /\* } *\/ */
+

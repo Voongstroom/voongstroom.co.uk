@@ -1,20 +1,33 @@
 import collections
 import json
 import django
-from friendship.models import Friend, Follow
+# from friendship.models import Friend, Follow
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from vocab.models import Word, Comment, Tag
+from vocab.models import Word, Comment, Tag, Notebook
 from django.contrib.auth.models import User
 
 # Create your views here.
 
-def friendship_test(request):
-    user = request.user
-    all_friends = Friend.objects.friends(request.user)
-    return HttpResponse(str(all_friends))
+def add_notebook(request):
+    notebook_name = request.POST['name'] if 'name' in request.POST else None
+    try:
+        user = User.objects.get(username=request.user)
+    except User.ObjectDoesNotExist:
+        user = None
+    if notebook_name and user:
+        new_notebook = Notebook(owner=user, name=notebook_name)
+        new_notebook.save()
+        new_notebook_dict = {"owner": user.username, "name": notebook_name}
+        return HttpResponse(json.dumps(new_notebook_dict), content_type="application/json")
+    return HttpResponse(json.dumps({}), content_type="application/json")
+
+# def friendship_test(request):
+#     user = request.user
+#     all_friends = Friend.objects.friends(request.user)
+#     return HttpResponse(str(all_friends))
 
     # # List all unread friendship requests
     # requests = Friend.objects.unread_requests(user=request.user)
@@ -168,11 +181,18 @@ def add_entry(request):
     user = user
     word = request.POST['word']
     word = word
+    notebook_name = request.POST['notebook'] if 'notebook' in request.POST else None
+    try:
+        notebook = Notebook.objects.get(name=notebook_name)
+    except django.core.exceptions.ObjectDoesNotExist:
+        notebook = None
     description = request.POST['description']
     if user and word and description:
-        word = Word(word=word, brief_description=description, author=user)
+        word = Word(word=word, brief_description=description, author=user, notebook=notebook)
         word.save()
-        return django.http.HttpResponse(word.id)
+        entry_dict = convert_entry_to_dict(word)
+        return django.http.HttpResponse(json.dumps(entry_dict), content_type="application/json")
+        # return django.http.HttpResponse(word.id)
     return HttpResponse('word not added. word: {0}'.format(word) + ', description: {0}'.format(description))
 
 def toggle_favourite(request):
@@ -199,7 +219,14 @@ def get_entries(request, username):
             variable, filter_string = filter_.split('/')
             variable_filter_strings[variable] = filter_string
     search_terms = request.GET['searchTerms'].split('+') if 'searchTerms' in request.GET else None
+    notebook_name = request.GET['notebook'] if 'notebook' in request.GET else None
     query = Word.objects.filter(author=user)
+    if notebook_name:
+        try:
+            notebook = Notebook.objects.get(name=notebook_name)
+            query = query.filter(notebook=notebook)
+        except django.core.exceptions.ObjectDoesNotExist:
+            pass
     for variable, filter_string in variable_filter_strings.iteritems():
         if variable == 'tag':
             for tag in filter_string.split("+"):
@@ -216,19 +243,27 @@ def get_entries(request, username):
 def convert_entries_to_json(entries):
     output = []
     for entry in entries:
-        output.append({
-            "id": entry.id,
-            "word": entry.word,
-            "description": entry.brief_description,
-            "popularity_rating": entry.popularity_rating,
-            "tags": [tag.name for tag in entry.tags.all()],
-        })
+        output.append(convert_entry_to_dict(entry))
     return json.dumps(output)
+    
+def convert_entry_to_dict(entry):
+    output = {}
+    output["id"] = entry.id
+    output["word"] = entry.word
+    output["description"] = entry.brief_description
+    output["popularity_rating"] = entry.popularity_rating
+    output["tags"] = [tag.name for tag in entry.tags.all()]
+    return output
 
 def get_friends(request, username):
     users = User.objects.exclude(username=username)
     response = {}
     response = {'users': [user.username for user in users]}
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+def get_notebooks(request, username):
+    notebooks = Notebook.objects.all()
+    response = [{'name': notebook.name} for notebook in notebooks]
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 def user_index(request, username):
